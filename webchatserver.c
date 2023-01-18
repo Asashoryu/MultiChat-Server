@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 #define DIMBUFF 256
 #define PORTA "10000"
@@ -67,9 +68,73 @@ int main() {
 		printf("Server: in ascolto\n");
 	}
 
+	fd_set socket_aperte;
+	FD_ZERO(&socket_aperte);
+	FD_SET(socket_ascolta, &socket_aperte);
+	int max_socket = socket_ascolta;
+
 	// accept
 	while(1) {
-		socket_client = accept(socket_ascolta, (struct sockaddr *) &indirizzo_client, &indirizzo_client_len);
+
+		fd_set socket_leggibili;
+		socket_leggibili = socket_aperte;
+		if (select(max_socket + 1, &socket_leggibili, 0, 0, 0) < 0) {
+			fprintf(stderr, "select() fallita. (%d)\n", errno);
+			return 1;
+		}
+
+		int i;
+		for (int i = 1; i <= max_socket; ++i) {
+			if (FD_ISSET(i, &socket_leggibili)) {
+
+				if (i == socket_ascolta) {
+
+					struct sockaddr_storage indirizzo_client;
+					socklen_t indirizzo_client_len = sizeof(indirizzo_client);
+					int socket_client = accept(socket_ascolta, (struct sockaddr*) &indirizzo_client, &indirizzo_client_len);
+					if (socket_client < 0) {
+						fprintf(stderr, "accept() fallita. (%d)/n", errno);
+						return 1;
+					}
+
+					FD_SET(socket_client, &socket_aperte);
+					if (socket_client > max_socket) {
+						max_socket = socket_client;
+					}
+
+					char indirizzo_buffer[100];
+					getnameinfo((struct sockaddr*) &indirizzo_client, indirizzo_client_len, indirizzo_buffer, sizeof(indirizzo_buffer), 0, 0, NI_NUMERICHOST);
+					printf("Server: accettata una nuova connessione da %s\n", indirizzo_buffer);
+				}
+				else {
+					char buffer_read[DIMBUFF];
+					int byte_ricevuti = recv(i, buffer_read, DIMBUFF, 0);
+
+					printf("%d caratteri letti dal server\n", byte_ricevuti);
+					buffer_read[byte_ricevuti] = '\0';
+					printf("Server: il messaggio ricevuto: %s\n", buffer_read);
+
+					if (byte_ricevuti < 1) {
+						FD_CLR(i, &socket_aperte);
+						close(i);
+						continue;
+					}
+					int j;
+					for (j = 1; j <= max_socket; ++j) {
+						if (FD_ISSET(j, &socket_aperte)) {
+							if (j == socket_ascolta || j == i) {
+								continue;
+							}
+							else {
+								send(j, buffer_read, byte_ricevuti, 0);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/*socket_client = accept(socket_ascolta, (struct sockaddr *) &indirizzo_client, &indirizzo_client_len);
 		if (socket_client < 0) { 
 			perror("Errore nella creazione della client socket");
 			exit(-1);
@@ -167,10 +232,11 @@ int main() {
 			}
 		}
 		printf("superato if ed else nella while dell'accept");
+		*/
 	}
-	
-	unlink("./demo_socket");
-	printf("Server: socket unlinkata\n");
+
+	close(socket_ascolta);
+	printf("Server: socket chiuse\n");
 	printf("Server: sessione terminata\n");
 	return 1;
 }
