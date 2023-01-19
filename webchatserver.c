@@ -18,6 +18,7 @@
 // tiene traccia di tutti gli utenti online e accetta le richieste di messaggio di quelli attivi presso le loro chat reindirizzandole
 //presso gli utenti giusti
 int main() {
+	//ciao alex
 	// definizione variabili
 	int socket_ascolta;
 	int socket_client;
