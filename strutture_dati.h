@@ -5,8 +5,17 @@
 
 #define NOME_UTENTE_LEN 100
 
+#define MESSAGGIO_LEN 1024
+#define DATA_LEN 30
+
 #define DIM_INIZIALE_UTENTI 10
 #define DIM_INIZIALE_GRUPPI 10
+
+typedef struct messaggio {
+    char contenuto[MESSAGGIO_LEN];
+    int mittente_id;
+    char orario[DATA_LEN];
+} messaggio;
 
 typedef struct richiesta_accesso {
     int richiedente_id;
@@ -18,14 +27,15 @@ typedef struct utente
     char nome[NOME_UTENTE_LEN];
     int *gruppi_aggiunti;
     int socket_fd;
-    richiesta_accesso *notifiche;
 } utente;
 
 typedef struct gruppo
 {
     char nome[NOME_GRUPPO_LEN];
+    messaggio *chat;
     int *membri;
     int amministratore_id;
+    richiesta_accesso *notifiche;
 } gruppo;
 
 typedef gruppo * gruppi;
