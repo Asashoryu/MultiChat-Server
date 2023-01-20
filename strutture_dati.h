@@ -38,10 +38,10 @@ void dealloca_utente(utente *Utente);
 gruppo *inizializza_gruppo(const char * const nome, const int amministratore);
 void dealloca_gruppo(gruppo * Gruppo);
 // ritorna un nuovo array di gruppi
-utenti *inizializza_gruppi(int * dimensione);
+gruppi *inizializza_gruppi(int * dimensione);
 void *dealloca_gruppi(gruppi * Gruppi);
 // ritorna un nuovo array di utenti
-gruppi *inizializza_utenti(int * dimensione);
+utenti *inizializza_utenti(int * dimensione);
 void *dealloca_utenti(utenti * Utenti);
 // ritorna 1=(dati avviati con successo), o 0=false
 int avvia_dati(gruppi * Gruppi, utenti * Utenti);
