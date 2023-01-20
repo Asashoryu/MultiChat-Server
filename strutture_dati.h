@@ -8,13 +8,13 @@
 #define MESSAGGIO_LEN 1024
 #define DATA_LEN 30
 
-#define DIM_INIZIALE_UTENTI 10
-#define DIM_INIZIALE_GRUPPI 10
+#define DIM_INIZIALE_UTENTI 100
+#define DIM_INIZIALE_GRUPPI 100
 
 typedef struct messaggio {
     char contenuto[MESSAGGIO_LEN];
     int mittente_id;
-    char orario[DATA_LEN];
+    int orario;
 } messaggio;
 
 typedef struct richiesta_accesso {
@@ -50,6 +50,9 @@ void dealloca_utente(utente *Utente);
 // ritorna un nuovo gruppo
 gruppo *inizializza_gruppo(const char * const nome, const int amministratore);
 void dealloca_gruppo(gruppo * Gruppo);
+// ritorna un nuovo messaggio
+messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, int orario);
+void dealloca_messaggio(messaggio * Messaggio);
 // ritorna un nuovo array di gruppi
 gruppi *inizializza_gruppi(int * dimensione);
 void *dealloca_gruppi(gruppi * Gruppi);
