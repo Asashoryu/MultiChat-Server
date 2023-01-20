@@ -5,6 +5,9 @@
 
 #define NOME_UTENTE_LEN 100
 
+#define DIM_INIZIALE_UTENTI 10
+#define DIM_INIZIALE_GRUPPI 10
+
 typedef struct richiesta_accesso {
     int richiedente_id;
     struct richiesta_accesso *next;
