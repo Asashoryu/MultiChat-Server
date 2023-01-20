@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 #include "strutture_dati.h"
-//#include "database.h"
+#include "database.h"
 
 richiesta_accesso *inizializza_richiesta_accesso(const int richiedente_id)
 {

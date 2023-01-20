@@ -81,6 +81,8 @@ int signin(utenti * Utenti, const char * const nome, const char * const password
 int crea_gruppo(gruppi * Gruppi, const char * const nome, int utente_creatore_id);
 // ritorna 1=true, o 0=false 
 int crea_notifica(gruppi * Gruppi, utenti * Utenti, const int gruppo_dove_registrarsi_id, const int utente_id);
+// ritorna 1=true, o 0=false
+int aggiungi_messaggio(gruppi *Gruppi, utenti *Utenti, const int gruppo_id, const int utente_id);
 
 
 #endif
