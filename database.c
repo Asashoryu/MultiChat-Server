@@ -27,3 +27,39 @@ void disconnetti_db(PGconn* conn)
     //puts("DB: disconnesso");
     PQfinish(conn);
 }
+
+int inserisci_utente_db(const int utente_id, const char * const nome, const char * const password) 
+{
+    PGconn *miaconn;
+    PGresult *exe;
+    char comandoSQL[2000];
+    char errore[1000];
+    int flag = 0;
+
+    miaconn = connetti_db(CONNSTRINGA);
+
+    if(miaconn != NULL)
+    {
+        sprintf(comandoSQL,"Insert into utente values (%d, '%s', '%s')", utente_id, nome, password);
+        exe = PQexec(miaconn, comandoSQL);
+        strcpy(errore, PQresultErrorMessage(exe));
+        if(strlen(errore) > 0)
+        {
+            printf("%s\n",errore);
+            printf("DB: errore nel comando insert, utente non inserito\n");
+        }
+        else
+        {
+            printf("DB: utente inserito con successo\n");
+            flag = 1;
+        }
+        PQclear(exe);
+    }
+    else
+    {
+        printf("DB: database non trovato, utente non inserito\n");
+    }
+
+    disconnetti_db(miaconn);
+    return flag;
+}
