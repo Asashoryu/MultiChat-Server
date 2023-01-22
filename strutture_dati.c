@@ -102,7 +102,7 @@ messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, 
     {
         strcpy (elemento->contenuto,contenuto);
         elemento->mittente_id = mittente_id;
-        elemento->orario = orario;
+        elemento->minutaggio = orario;
     }
     
     return elemento;
@@ -113,26 +113,41 @@ void dealloca_messaggio(messaggio * Messaggio)
     free (Messaggio);
 }
 
-gruppi *inizializza_gruppi(int * dimensione)
+gruppi *inizializza_gruppi(int * numero_di_gruppi)
 {
+    int i;
     gruppi *Gruppi = malloc (sizeof(gruppi*));
-    if (Gruppi == NULL)
+    if (Gruppi != NULL)
     {
-        Gruppi->dim = dimensione;
-        Gruppi->array_gruppi = malloc (dimensione*sizeof(gruppi*));
+        Gruppi->dim = (*numero_di_gruppi)*2;
+        Gruppi->array_gruppi = malloc ((*numero_di_gruppi)*sizeof(gruppo*));
+        for (i=0;i<numero_di_gruppi;i++)
+        {
+            Gruppi->array_gruppi[i] = NULL;
+        }
     }
     return Gruppi;
 }
 
 void *dealloca_gruppi(gruppi * Gruppi)
 {
-    
+    int i;
+    for (i=0;i<Gruppi->dim;i++)
+    {
+        dealloca_gruppo (Gruppi->array_gruppi[i]);
+    }
+    free (Gruppi->array_gruppi);
+    free (Gruppi);
 }
 
-utenti *inizializza_utenti(int * dimensione)
+utenti *inizializza_utenti(int * numero_di_utenti)
 {
+    int i;
     utenti *Utenti = malloc (sizeof(utenti*));
-    return Utenti;
+    if (Utenti != NULL)
+    {
+        
+    }
 }
 
 void *dealloca_utenti(utenti * Utenti)
