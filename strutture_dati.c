@@ -36,11 +36,8 @@ utente *inizializza_utente(const char * const nome)
     {
         strcpy (elemento->nome,nome);
         elemento->gruppi_aggiunti = malloc (10*sizeof(int*));
-        elemento->notifiche = malloc (10*sizeof(richiesta_accesso*));
-        if (elemento->gruppi_aggiunti == NULL || elemento->notifiche == NULL)
+        if (elemento->gruppi_aggiunti == NULL)
         {
-            free (elemento->gruppi_aggiunti);
-            free (elemento->notifiche);
             free (elemento);
             return NULL;
         }
@@ -53,8 +50,6 @@ utente *inizializza_utente(const char * const nome)
 void dealloca_utente(utente *Utente)
 {
     free (Utente->gruppi_aggiunti);
-    free (Utente->notifiche);
-
     free (Utente);
 }
 
@@ -71,9 +66,14 @@ gruppo *inizializza_gruppo(const char * const nome, const int amministratore)
     {
         strcpy (elemento->nome,nome);
         elemento->amministratore_id = amministratore;
-        elemento->membri = malloc (10*sizeof(int*));
-        if (elemento->membri == NULL)
+        elemento->membri = malloc (DIM_INIZIALE_UTENTI*sizeof(int*));
+        elemento->notifiche = malloc (sizeof(richiesta_accesso*));
+        elemento->chat = malloc (sizeof(messaggio*));
+        if (elemento->membri == NULL || elemento->notifiche == NULL || elemento->chat == NULL)
         {
+            free (elemento->membri);
+            free (elemento->notifiche);
+            free (elemento->chat);
             free (elemento);
             return NULL;
         }
@@ -85,7 +85,32 @@ gruppo *inizializza_gruppo(const char * const nome, const int amministratore)
 void dealloca_gruppo(gruppo * Gruppo)
 {
     free (Gruppo->membri);
+    free (Gruppo->notifiche);
+    free (Gruppo->chat);
     free (Gruppo);
+}
+
+messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, int orario)
+{
+    messaggio *elemento = NULL;
+    if (strlen(contenuto)>MESSAGGIO_LEN)
+        return NULL;
+
+    elemento = malloc (sizeof(messaggio*));
+
+    if (elemento != NULL)
+    {
+        strcpy (elemento->contenuto,contenuto);
+        elemento->mittente_id = mittente_id;
+        elemento->orario = orario;
+    }
+    
+    return elemento;
+}
+
+void dealloca_messaggio(messaggio * Messaggio)
+{
+    free (Messaggio);
 }
 
 gruppi *inizializza_gruppi(int * dimensione)
