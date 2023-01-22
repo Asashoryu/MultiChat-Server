@@ -90,6 +90,32 @@ void dealloca_gruppo(gruppo * Gruppo)
     free (Gruppo);
 }
 
+int trova_min_id_gruppo (gruppi *Gruppi)
+{
+    int i;
+    for (i=0;i<Gruppi->dim;i++)
+    {
+        if (Gruppi->array_gruppi[i] == NULL)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int trova_min_id_utente (utenti *Utenti)
+{
+    int i;
+    for (i=0;i<Utenti->dim;i++)
+    {
+        if (Utenti->array_utenti[i] == NULL)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, int orario)
 {
     messaggio *elemento = NULL;
