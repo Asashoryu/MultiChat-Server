@@ -38,7 +38,26 @@ int avvia_dati(gruppi *Gruppi, utenti *Utenti) {
 
 int avvia_gruppi(gruppi *Gruppi, PGresult *gruppi_db) {
     
-    int max_gruppi_id = 
+    int num_tuple;
+    int max_gruppo_id;
+
+    int gruppo_id;
+
+    gruppo * gruppo_pt;
+
+    if (Gruppi = NULL || gruppi_db == NULL) {
+        return 0;
+    }
+
+    num_tuple = PQntuples(gruppi_db);
+    max_gruppo_id = atoi(PQgetvalue(gruppi_db, num_tuple - 1, 1));
+
+    inizializza_gruppi(max_gruppo_id);
+
+    for (int i = 0; i < num_tuple; i++) {
+        gruppo_pt = inizializza_gruppo(PQgetvalue(gruppi_db, i, 2), atoi(PQgetvalue(gruppi_db, i, 3)));
+        Gruppi->array_gruppi[atoi(PQgetvalue(gruppi_db, i, 1))] = gruppo_pt;
+    }
 }
 
 int avvia_utenti(utenti *Utenti, PGresult *utenti_db) {
