@@ -4,6 +4,12 @@
 #include "strutture_dati.h"
 #include "database.h"
 
+int avvia_gruppi(gruppi *Gruppi, PGresult *gruppi_db);
+int avvia_utenti(utenti *Utenti, PGresult *utenti_db);
+int avvia_membership(gruppi *Gruppi, utenti *Utenti, PGresult *membership_db);
+int avvia_messaggi(gruppi *Gruppi, PGresult *messaggi_db);
+int avvia_notifica(gruppi *Gruppi, PGresult *gruppi_db);
+
 int avvia_dati(gruppi * Gruppi, utenti * Utenti);
 // ritorna 1=true, o 0=false
 int check_se_nome_utente_valido(const char * const nome);
