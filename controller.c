@@ -61,7 +61,26 @@ int avvia_gruppi(gruppi *Gruppi, PGresult *gruppi_db) {
 }
 
 int avvia_utenti(utenti *Utenti, PGresult *utenti_db) {
+    int num_tuple;
+    int max_utente_id;
 
+    int utente_id;
+
+    utente * gruppo_pt;
+
+    if (Utenti = NULL || utenti_db == NULL) {
+        return 0;
+    }
+
+    num_tuple = PQntuples(utenti_db);
+    max_utente_id = atoi(PQgetvalue(utenti_db, num_tuple - 1, 1));
+
+    inizializza_gruppi(max_utente_id);
+
+    for (int i = 0; i < num_tuple; i++) {
+        gruppo_pt = inizializza_gruppo(PQgetvalue(utenti_db, i, 2), atoi(PQgetvalue(utenti_db, i, 3)));
+        Utenti->array_utenti[atoi(PQgetvalue(utenti_db, i, 1))] = gruppo_pt;
+    }
 }
 
 int avvia_membership(gruppi *Gruppi, utenti *Utenti, PGresult *membership_db) {
