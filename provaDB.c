@@ -1,7 +1,7 @@
 // gcc -o provaDB provaDB.c database.c -I/usr/include/postgresql -L/usr/lib/postgresql/15/lib -lpq
 #include <stdio.h>
 #include <string.h>
-#include "libpq-fe.h"
+#include <libpq-fe.h>
 #include "database.h"
 
 #define UTENTE_ID 1

@@ -38,8 +38,17 @@ typedef struct gruppo
     richiesta_accesso *notifiche;
 } gruppo;
 
-typedef gruppo * gruppi;
-typedef utente * utenti;
+typedef struct gruppi
+{
+    int dim;
+    gruppo * array_gruppi;
+} gruppi;
+
+typedef struct utenti
+{
+    int dim;
+    utente * array_utenti;
+} utenti;
 
 // ritorna una nuova richiesta di accesso
 richiesta_accesso *inizializza_richiesta_accesso(const int richiedente_id);

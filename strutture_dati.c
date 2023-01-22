@@ -115,22 +115,28 @@ void dealloca_messaggio(messaggio * Messaggio)
 
 gruppi *inizializza_gruppi(int * dimensione)
 {
-    gruppi *Gruppi = malloc ((*dimensione)*sizeof(gruppi*));
+    gruppi *Gruppi = malloc (sizeof(gruppi*));
+    if (Gruppi == NULL)
+    {
+        Gruppi->dim = dimensione;
+        Gruppi->array_gruppi = malloc (dimensione*sizeof(gruppi*));
+    }
     return Gruppi;
 }
 
 void *dealloca_gruppi(gruppi * Gruppi)
 {
-    free (Gruppi);
+    
 }
 
 utenti *inizializza_utenti(int * dimensione)
 {
-    utenti *Utenti = malloc ((*dimensione)*sizeof(gruppi*));
+    utenti *Utenti = malloc (sizeof(utenti*));
     return Utenti;
 }
 
 void *dealloca_utenti(utenti * Utenti)
 {
+
     free (Utenti);
 }
