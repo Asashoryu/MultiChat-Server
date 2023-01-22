@@ -41,13 +41,13 @@ typedef struct gruppo
 typedef struct gruppi
 {
     int dim;
-    gruppo * array_gruppi;
+    gruppo **array_gruppi;
 } gruppi;
 
 typedef struct utenti
 {
     int dim;
-    utente * array_utenti;
+    utente **array_utenti;
 } utenti;
 
 // ritorna una nuova richiesta di accesso

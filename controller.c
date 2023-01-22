@@ -38,7 +38,6 @@ int avvia_dati(gruppi *Gruppi, utenti *Utenti) {
 
 int avvia_gruppi(gruppi *Gruppi, PGresult *gruppi_db) {
     
-    int max_gruppi_id = 
 }
 
 int avvia_utenti(utenti *Utenti, PGresult *utenti_db) {
