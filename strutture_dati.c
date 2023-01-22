@@ -121,7 +121,7 @@ gruppi *inizializza_gruppi(int * numero_di_gruppi)
     {
         Gruppi->dim = (*numero_di_gruppi)*2;
         Gruppi->array_gruppi = malloc ((*numero_di_gruppi)*sizeof(gruppo*));
-        for (i=0;i<numero_di_gruppi;i++)
+        for (i=0;i<Gruppi->dim;i++)
         {
             Gruppi->array_gruppi[i] = NULL;
         }
@@ -146,12 +146,22 @@ utenti *inizializza_utenti(int * numero_di_utenti)
     utenti *Utenti = malloc (sizeof(utenti*));
     if (Utenti != NULL)
     {
-        
+        Utenti->dim = (*numero_di_utenti)*2;
+        Utenti->array_utenti = malloc ((*numero_di_utenti)*sizeof(utente*));
+        for (i=0;i<Utenti->dim;i++)
+        {
+            Utenti->array_utenti[i] = NULL;
+        }
     }
 }
 
 void *dealloca_utenti(utenti * Utenti)
 {
-
+    int i;
+    for (i=0;i<Utenti->dim;i++)
+    {
+        dealloca_utente (Utenti->array_utenti[i]);
+    }
+    free (Utenti->array_utenti);
     free (Utenti);
 }
