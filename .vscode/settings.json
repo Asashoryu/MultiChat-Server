@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "database.h": "c",
-        "socket.h": "c"
+        "socket.h": "c",
+        "libpq-fe.h": "c"
     }
 }

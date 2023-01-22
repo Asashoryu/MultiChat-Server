@@ -43,28 +43,28 @@ ALTER TABLE membership
 
 CREATE TABLE messaggio(
     messaggio_id serial,
-    utente_notificante_id integer NOT NULL,
+    mittente_id integer NOT NULL,
+    gruppo_id integer NOT NULL,
     contenuto varchar(1024) NOT NULL,
-    minutaggio bigint NOT NULL,
-    gruppo_id integer NOT NULL
+    minutaggio bigint NOT NULL
 );
 
 ALTER TABLE messaggio
     add constraint messaggio_pk primary key (messaggio_id),
-    add constraint messaggio_utente_fk foreign key (utente_notificante_id) references utente(utente_id)
+    add constraint messaggio_utente_fk foreign key (mittente_id) references utente(utente_id)
     on update CASCADE,
     add constraint minutaggio_positivo check (minutaggio > 0),
     add constraint messaggio_gruppo_fk foreign key (gruppo_id) references gruppo(gruppo_id)
     on update CASCADE on delete CASCADE;
 
 CREATE TABLE notifica(
-    notifica_id serial,
+    utente_notificante_id integer NOT NULL,
     gruppo_id integer NOT NULL
 );
 
 ALTER TABLE notifica
-    add constraint notifica_pk primary key (notifica_id),
+    add constraint notifica_pk primary key (utente_notificante_id, gruppo_id),
+    add constraint notifica_utente_notificante_fk foreign key (utente_notificante_id) references utente(utente_id)
+    on update CASCADE on delete CASCADE,
     add constraint notifica_gruppo_fk foreign key (gruppo_id) references gruppo(gruppo_id)
     on update CASCADE on delete CASCADE;
-
-    
