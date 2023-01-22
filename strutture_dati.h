@@ -14,7 +14,7 @@
 typedef struct messaggio {
     char contenuto[MESSAGGIO_LEN];
     int mittente_id;
-    int orario;
+    long long int minutaggio;
 } messaggio;
 
 typedef struct richiesta_accesso {

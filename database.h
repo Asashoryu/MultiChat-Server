@@ -23,7 +23,7 @@ int insert_notifica_db(const int utente_notificante_id, const int gruppo_id);
 int delete_membership_db(const int utente_id, const int gruppo_id);
 int delete_notifica_db(const int utente_notificante_id, const int gruppo_id);
 
-int check_se_registrato(const char* const nome, const char* const password);
+PGresult *check_se_registrato(const char* const nome, const char* const password);
 
 void stampa_result_query(PGresult *result_query);
 

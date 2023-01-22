@@ -294,7 +294,7 @@ int insert_messaggio_db(const int mittente_id, const int gruppo_id, char * conte
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into messaggio(mittente_id, gruppo_id, contenuto, minutaggio) values (%d, %d, %d, %lld)", mittente_id, gruppo_id, contenuto, minutaggio);
+        sprintf(comandoSQL,"Insert into messaggio(mittente_id, gruppo_id, contenuto, minutaggio) values (%d, %d, %s, %lld)", mittente_id, gruppo_id, contenuto, minutaggio);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -423,7 +423,7 @@ int delete_notifica_db(const int utente_notificante_id, const int gruppo_id) {
     return flag;
 }
 
-int check_se_registrato(const char* const nome, const char* const password) {
+PGresult *check_se_registrato(const char* const nome, const char* const password) {
     PGconn *miaconn   = NULL;
     PGresult *utente_registrato_db = NULL;
     char comandoSQL[2000];
