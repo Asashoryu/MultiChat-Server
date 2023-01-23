@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 char *parse_comando(char *pacchetto)
 {
@@ -9,9 +10,9 @@ char *parse_comando(char *pacchetto)
     char *fine = NULL;
     int dim = 0;
     char comando[200];
-    char *cmd = NULL;
+    char *cmd = malloc(200*sizeof(char));
 
-    strcpy (comando,pacchetto);
+    strcpy (comando, pacchetto);
     printf ("\n");
     inizio = strstr (comando,"cmd=");
     printf ("\n");

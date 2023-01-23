@@ -26,7 +26,7 @@ char *processa(const char * const pacchetto, int ** array_socket, int * dim) {
         pacchetto_da_spedire = processa_messaggio(pacchetto, array_socket, dim);
     }
     if (comando == ACCETTAUT) {
-        pacchetto_da_spedire = processa_accetta_notifica(pacchetto, array_socket, dim);
+        pacchetto_da_spedire = processa_acc(pacchetto, array_socket, dim);
     }
 }
 
