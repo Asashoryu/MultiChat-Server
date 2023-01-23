@@ -26,7 +26,7 @@
 #define ACCETTAUTERR 512
 
 // restituisce il tipo di comando ricevuto dal pacchetto
-char *parse_comando(const char * const pacchetto);
+char *parse_comando(char *pacchetto);
 void parse_login(const char * const pacchetto, char * nome, char * password);
 void parse_signin(const char * const pacchetto, char * nome, char * password);
 void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente);
@@ -40,6 +40,5 @@ char *format_crea_gruppo_risposta(const int comando);
 char *format_messaggio_risposta(const int comando);
 
 char *format_add_comando(const int comando);
-char *format
 
 #endif

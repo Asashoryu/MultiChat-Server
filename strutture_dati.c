@@ -25,46 +25,29 @@ void dealloca_richiesta_accesso(richiesta_accesso *Richiesta_accesso)
 
 int aggiungi_richiesta_accesso (gruppi *Gruppi, const int richiedente_id, const int gruppo_id)
 {
-    int i;
-
-    for (i=0;i<Gruppi->dim;i++)
-    {
-        if (i == gruppo_id)
-        {
-            Gruppi->array_gruppi[i]->notifiche = aggiungi_richiesta_accesso_alla_lista (Gruppi->array_gruppi[i]->notifiche, richiedente_id);
-            return 1;
-        }
-    }
-
-    return 0;
+    Gruppi->array_gruppi[gruppo_id]->notifiche = aggiungi_richiesta_accesso_alla_lista (Gruppi->array_gruppi[gruppo_id]->notifiche, richiedente_id);
+    return 1;
 }
 
 richiesta_accesso *aggiungi_richiesta_accesso_alla_lista (richiesta_accesso *notifica, const int richiedente_id)
 {
-    if (notifica == NULL)
+    richiesta_accesso *elemento = NULL;
+    elemento = inizializza_richiesta_accesso (richiedente_id);
+    if (elemento != NULL)
     {
-        notifica = inizializza_richiesta_accesso (richiedente_id);
-        return notifica;
+        elemento->next = notifica;
+        return elemento;
     }
-
-    notifica->next = aggiungi_richiesta_accesso_alla_lista (notifica->next, richiedente_id);
     return notifica;
 }
 
 int rimuovi_richiesta_accesso (gruppi *Gruppi, const int gruppo_id, const int richiedente_id)
 {
-    int i;
-
-    for (i=0;i<Gruppi->dim;i++)
-    {
-        if (i == gruppo_id)
-        {
-            Gruppi->array_gruppi[i]->notifiche = rimuovi_richiesta_accesso_dalla_lista (Gruppi->array_gruppi[i]->notifiche, richiedente_id);
-            return 1;
-        }
-    }
-
-    return 0;
+    Gruppi->array_gruppi[gruppo_id]->notifiche = rimuovi_richiesta_accesso_dalla_lista (Gruppi->array_gruppi[gruppo_id]->notifiche, richiedente_id);
+    if (Gruppi->array_gruppi[gruppo_id] == NULL)
+        return 0;
+    else
+        return 1;
 }
 
 richiesta_accesso *rimuovi_richiesta_accesso_dalla_lista (richiesta_accesso *notifica, const int richiedente_id)

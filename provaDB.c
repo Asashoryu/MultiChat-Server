@@ -15,5 +15,5 @@ int main() {
     strcpy(nome, NOME);
     strcpy(password, PASSWORD);
 
-    insert_utente_db(id, nome, password);
+    //insert_utente_db(id, nome, password);
 }
