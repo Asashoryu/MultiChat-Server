@@ -23,6 +23,68 @@ void dealloca_richiesta_accesso(richiesta_accesso *Richiesta_accesso)
     free (Richiesta_accesso);
 }
 
+int aggiungi_richiesta_accesso (gruppi *Gruppi, const int richiedente_id, const int gruppo_id)
+{
+    int i;
+
+    for (i=0;i<Gruppi->dim;i++)
+    {
+        if (i == gruppo_id)
+        {
+            Gruppi->array_gruppi[i]->notifiche = aggiungi_richiesta_accesso_alla_lista (Gruppi->array_gruppi[i]->notifiche, richiedente_id);
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+richiesta_accesso *aggiungi_richiesta_accesso_alla_lista (richiesta_accesso *notifica, const int richiedente_id)
+{
+    if (notifica == NULL)
+    {
+        notifica = inizializza_richiesta_accesso (richiedente_id);
+        return notifica;
+    }
+
+    notifica->next = aggiungi_richiesta_accesso_alla_lista (notifica->next, richiedente_id);
+    return notifica;
+}
+
+int rimuovi_richiesta_accesso (gruppi *Gruppi, const int gruppo_id, const int richiedente_id)
+{
+    int i;
+
+    for (i=0;i<Gruppi->dim;i++)
+    {
+        if (i == gruppo_id)
+        {
+            Gruppi->array_gruppi[i]->notifiche = rimuovi_richiesta_accesso_dalla_lista (Gruppi->array_gruppi[i]->notifiche, richiedente_id);
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+richiesta_accesso *rimuovi_richiesta_accesso_dalla_lista (richiesta_accesso *notifica, const int richiedente_id)
+{
+    richiesta_accesso *tmp;
+
+    if (notifica == NULL)
+        return NULL;
+
+    if (notifica->richiedente_id == richiedente_id)
+    {
+        tmp = notifica->next;
+        free (notifica);
+        return tmp;
+    }
+
+    notifica->next = rimuovi_richiesta_accesso_dalla_lista (notifica->next, richiedente_id);
+    return notifica;
+}
+
 utente *inizializza_utente(const char * const nome)
 {
     utente *elemento = NULL;
@@ -116,7 +178,38 @@ int trova_min_id_utente (utenti *Utenti)
     return -1;
 }
 
-messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, int orario)
+int aggiungi_gruppo (gruppi *Gruppi, const char * const nome_gruppo, int amministratore_id)
+{
+    int i = trova_min_id_gruppo (Gruppi);
+
+    if (i != -1)
+    {
+        Gruppi->array_gruppi[i] = inizializza_gruppo (nome_gruppo,amministratore_id);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int aggiungi_utente (utenti *Utenti, const char * const nome)
+{
+    int i = trova_min_id_utente (Utenti);
+
+    if (i != -1)
+    {
+        Utenti->array_utenti[i] = inizializza_utente (nome);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+    
+}
+
+messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, long long int orario)
 {
     messaggio *elemento = NULL;
     if (strlen(contenuto)>MESSAGGIO_LEN)
@@ -129,6 +222,7 @@ messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, 
         strcpy (elemento->contenuto,contenuto);
         elemento->mittente_id = mittente_id;
         elemento->minutaggio = orario;
+        elemento->next = NULL;
     }
     
     return elemento;
@@ -137,6 +231,41 @@ messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, 
 void dealloca_messaggio(messaggio * Messaggio)
 {
     free (Messaggio);
+}
+
+int aggiungi_messaggio(gruppi *Gruppi, const int gruppo_id, const int mittente_id, long long int minutaggio, const char * const contenuto)
+{
+    int i;
+    if (strlen (contenuto) > MESSAGGIO_LEN)
+        return 0;
+
+    for (i=0;i<Gruppi->dim;i++)
+    {
+        if (i == gruppo_id)
+        {
+            Gruppi->array_gruppi[i]->chat = aggiungi_messaggio_in_lista (Gruppi->array_gruppi[i]->chat, contenuto, mittente_id, minutaggio);
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+messaggio *aggiungi_messaggio_in_lista(messaggio *chat, const char * const contenuto, int mittente_id, long long minutaggio)
+{
+    messaggio *elemento = NULL;
+
+    if (chat == NULL)
+        return NULL;
+
+    if (chat->minutaggio <= minutaggio)
+    {
+        elemento = inizializza_messaggio (contenuto, mittente_id, minutaggio);
+        return elemento;
+    }
+
+    chat->next = aggiungi_messaggio_in_lista (chat->next, contenuto, mittente_id, minutaggio);
+    return chat;
 }
 
 gruppi *inizializza_gruppi(int * numero_di_gruppi)

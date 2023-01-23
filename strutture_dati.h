@@ -15,6 +15,7 @@ typedef struct messaggio {
     char contenuto[MESSAGGIO_LEN];
     int mittente_id;
     long long int minutaggio;
+    struct messaggio *next;
 } messaggio;
 
 typedef struct richiesta_accesso {
@@ -53,6 +54,10 @@ typedef struct utenti
 // ritorna una nuova richiesta di accesso
 richiesta_accesso *inizializza_richiesta_accesso(const int richiedente_id);
 void dealloca_richiesta_accesso(richiesta_accesso *Richiesta_accesso);
+//restituisce 1 se l'inserimento è andato a buon fine, 0 altrimenti
+int aggiungi_richiesta_accesso (gruppi *Gruppi, const int richiedente_id, const int gruppo_id);
+//restituisce 1 se la rimozione è andata a buon fine, 0 altrimenti
+int rimuovi_richiesta_accesso (gruppi *Gruppi, const int gruppo_id, const int richiedente_id);
 // ritorna una nuovo utente
 utente *inizializza_utente(const char * const nome);
 void dealloca_utente(utente *Utente);
@@ -60,7 +65,7 @@ void dealloca_utente(utente *Utente);
 gruppo *inizializza_gruppo(const char * const nome, const int amministratore);
 void dealloca_gruppo(gruppo * Gruppo);
 // ritorna un nuovo messaggio
-messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, int orario);
+messaggio *inizializza_messaggio(const char * const contenuto, int mittente_id, long long int orario);
 void dealloca_messaggio(messaggio * Messaggio);
 // ritorna un nuovo array di gruppi
 gruppi *inizializza_gruppi(int * dimensione);
@@ -71,7 +76,7 @@ void *dealloca_utenti(utenti * Utenti);
 // ritorna 1=(dati avviati con successo), o 0=false
 
 // ritorna 1=true, o 0=false
-int aggiungi_messaggio(gruppi *Gruppi, utenti *Utenti, const int gruppo_id, const int utente_id);
+int aggiungi_messaggio(gruppi *Gruppi, const int gruppo_id, const int mittente_id, long long int minutaggio, const char * const contenuto);
 
 
 #endif
