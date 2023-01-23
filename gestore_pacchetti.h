@@ -24,6 +24,10 @@
 #define CREAGRUPERR 312
 #define SENDMESSERR 412
 #define ACCETTAUTERR 512
+// 3
+#define LOGINNONTROVATO 113
+#define SIGNGIAREGISTRATO 213
+#define CREAGRUPGIAREGISTRATO 313
 
 // restituisce il tipo di comando ricevuto dal pacchetto
 char *parse_comando(char *pacchetto);

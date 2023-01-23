@@ -10,5 +10,7 @@ int main ()
     printf ("%s\n",pac);
     char *cmd = parse_comando (pac);
     printf ("%s\n",cmd);
+
+    printf("provo a stampare /");
     return 0;
 }
