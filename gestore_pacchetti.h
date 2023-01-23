@@ -29,9 +29,17 @@
 char *parse_comando(const char * const pacchetto);
 void parse_login(const char * const pacchetto, char * nome, char * password);
 void parse_signin(const char * const pacchetto, char * nome, char * password);
-void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, int * utente_id);
-void parse_messaggio(const char * const pacchetto, int gruppo_id, int utente_id, char * messaggio);
+void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente);
+void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * messaggio);
+void parse_acceta_notifica(const char * const pacchetto);
 
-char *format_response(const int codice_comando);
+char *format_risposta(const int comando);
+char *format_login_risposta(const int comando);
+char *format_signin_risposta(const int comando);
+char *format_crea_gruppo_risposta(const int comando);
+char *format_messaggio_risposta(const int comando);
+
+char *format_add_comando(const int comando);
+char *format
 
 #endif
