@@ -4,93 +4,60 @@
 #include <ctype.h>
 #include <libpq-fe.h>
 
-#include "strutture_dati.h"
+#include "gestore_pacchetti.h"
 #include "database.h"
 
-int avvia_dati(gruppi *Gruppi, utenti *Utenti) {
-    PGresult *gruppi_db;
-    PGresult *utenti_db;
-    PGresult *membership_db;
-    PGresult *messaggi_db;
-    PGresult *notifiche_db;
+char *processa(const char * const pacchetto, int ** array_socket, int * dim) {
+    char * pacchetto_da_spedire;
+    int comando;
 
-    dealloca_gruppi(Gruppi);
-    dealloca_utenti(Utenti);
+    comando = parse_comando(pacchetto);
 
-    gruppi_db = select_gruppi_db();
-    utenti_db = select_utenti_db();
-    membership_db = select_membership_db();
-    messaggi_db = select_messaggi_db();
-    notifiche_db = select_notifiche_db();
-
-    int flag = 0;
-
-    if (gruppi_db == NULL || utenti_db == NULL || membership_db == NULL || messaggi_db == NULL || notifiche_db == NULL) {
-        return 0;
+    if (comando == LOGIN) {
+        pacchetto_da_spedire = processa_login(pacchetto, array_socket, dim);
     }
-
-    avvia_gruppi(Gruppi, gruppi_db);
-    avvia_utenti(Utenti, utenti_db);
-    avvia_membership(Gruppi, Utenti, membership_db);
-    avvia_messaggi(Gruppi, messaggi_db);
-    avvia_notifica(Gruppi, gruppi_db);    
-}
-
-int avvia_gruppi(gruppi *Gruppi, PGresult *gruppi_db) {
-    
-    int num_tuple;
-    int max_gruppo_id;
-
-    int gruppo_id;
-
-    gruppo * gruppo_pt;
-
-    if (Gruppi = NULL || gruppi_db == NULL) {
-        return 0;
+    if (comando == SIGNIN) {
+        pacchetto_da_spedire = processa_singin(pacchetto, array_socket, dim);
     }
-
-    num_tuple = PQntuples(gruppi_db);
-    max_gruppo_id = atoi(PQgetvalue(gruppi_db, num_tuple - 1, 1));
-
-    inizializza_gruppi(max_gruppo_id);
-
-    for (int i = 0; i < num_tuple; i++) {
-        gruppo_pt = inizializza_gruppo(PQgetvalue(gruppi_db, i, 2), atoi(PQgetvalue(gruppi_db, i, 3)));
-        Gruppi->array_gruppi[atoi(PQgetvalue(gruppi_db, i, 1))] = gruppo_pt;
+    if (comando == CREAGRUP) {
+        pacchetto_da_spedire = processa_crea_gruppo(pacchetto, array_socket, dim);
+    }
+    if (comando == SENDMESS) {
+        pacchetto_da_spedire = processa_messaggio(pacchetto, array_socket, dim);
+    }
+    if (comando == ACCETTAUT) {
+        pacchetto_da_spedire = processa_accetta_notifica(pacchetto, array_socket, dim);
     }
 }
 
-int avvia_utenti(utenti *Utenti, PGresult *utenti_db) {
-    int num_tuple;
-    int max_utente_id;
-
-    int utente_id;
-
-    utente * utente_pt;
-
-    if (Utenti = NULL || utenti_db == NULL) {
-        return 0;
-    }
-
-    num_tuple = PQntuples(utenti_db);
-    max_utente_id = atoi(PQgetvalue(utenti_db, num_tuple - 1, 1));
-
-    inizializza_gruppi(max_utente_id);
-
-    for (int i = 0; i < num_tuple; i++) {
-        utente_pt = inizializza_utente(PQgetvalue(utenti_db, i, 2));
-        Utenti->array_utenti[atoi(PQgetvalue(utenti_db, i, 1))] = utente_pt;
-    }
+char *processa_login(const char * const pacchetto, int ** array_socket, int * dim) {
+    char * nome;
+    char * password;
+    parse_login(pacchetto, nome, password);
+    check_se_utente_registrato(nome, password);
 }
 
-int avvia_membership(gruppi *Gruppi, utenti *Utenti, PGresult *membership_db) {
-
+char *processa_signin(const char * const pacchetto, int ** array_socket, int * dim) {
+    char * nome;
+    char * password;
+    parse_signin(pacchetto, nome, password);
 }
 
-int avvia_messaggi(gruppi *Gruppi, PGresult *messaggi_db) {
-
+char *processa_crea_gruppo(const char * const pacchetto, int ** array_socket, int * dim) {
+    char * nome_gruppo;
+    char * nome_utente;
+    parse_crea_gruppo(pacchetto, nome_gruppo, nome_utente);
 }
 
-int avvia_notifica(gruppi *Gruppi, PGresult *gruppi_db) {
+char *processa_messaggio(const char * const pacchetto, int ** array_socket, int * dim) {
+    char * nome_gruppo;
+    char * nome_utente;
+    char * contenuto;
+    parse_messaggio(pacchetto, nome_gruppo, nome_utente, contenuto);
+}
 
+char *processa_accetta_notifica(const char * const pacchetto, int ** array_socket, int * dim) {
+    char * nome_gruppo;
+    char * nome_utente;
+    parse_accetta_notifica(pacchetto, nome_utente, nome_gruppo);
 }

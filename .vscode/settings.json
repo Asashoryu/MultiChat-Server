@@ -5,6 +5,6 @@
         "libpq-fe.h": "c",
         "gestoredb.h": "c",
         "stdio.h": "c",
-        "gestore_pacchetti.h": "c"
+        "strutture_dati.h": "c"
     }
 }

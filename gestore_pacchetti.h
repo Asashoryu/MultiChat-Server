@@ -31,7 +31,7 @@ void parse_login(const char * const pacchetto, char * nome, char * password);
 void parse_signin(const char * const pacchetto, char * nome, char * password);
 void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente);
 void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * messaggio);
-void parse_acceta_notifica(const char * const pacchetto);
+void parse_accetta_notifica(const char * const pacchetto, char * nome_utente, char * nome_gruppo);
 
 char *format_risposta(const int comando);
 char *format_login_risposta(const int comando);
