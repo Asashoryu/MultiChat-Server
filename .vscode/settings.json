@@ -4,6 +4,7 @@
         "socket.h": "c",
         "libpq-fe.h": "c",
         "gestoredb.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "strutture_dati.h": "c"
     }
 }
