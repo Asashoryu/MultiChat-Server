@@ -24,4 +24,5 @@ char *parse_comando(char *pacchetto)
         cmd[dim] = '\0';
         return cmd;
     }
+    return NULL;
 }
