@@ -6,7 +6,7 @@
 int main ()
 {
     char pac[200];
-    strcpy (pac,"cmd=100\r\nnome=Alex\r\npassword=pass");
+    strcpy (pac, "cmd=100\r\nnome=Alex\r\npassword=pass");
     printf ("%s\n",pac);
     char *cmd = parse_comando (pac);
     printf ("%s\n",cmd);
