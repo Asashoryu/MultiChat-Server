@@ -33,6 +33,17 @@ void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * 
 void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * messaggio);
 void parse_accetta_notifica(const char * const pacchetto, char * nome_utente, char * nome_gruppo);
 
+// void alloca_comando(char *cmd);
+// char *alloca_nome();
+// char *alloca_password();
+// void alloca_gruppo_e_nome(char *gruppo, char *nome);
+// void alloca_messaggio(char *messaggio);
+
+// void dealloca_comando(char *cmd);
+// void dealloca_nome_password(char *nome, char *password);
+// void dealloca_gruppo_e_nome(char *gruppo, char *nome);
+// void dealloca_messaggio(char *messaggio);
+
 char *format_risposta(const int comando);
 char *format_login_risposta(const int comando);
 char *format_signin_risposta(const int comando);
