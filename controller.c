@@ -66,7 +66,7 @@ int avvia_utenti(utenti *Utenti, PGresult *utenti_db) {
 
     int utente_id;
 
-    utente * gruppo_pt;
+    utente * utente_pt;
 
     if (Utenti = NULL || utenti_db == NULL) {
         return 0;
@@ -78,8 +78,8 @@ int avvia_utenti(utenti *Utenti, PGresult *utenti_db) {
     inizializza_gruppi(max_utente_id);
 
     for (int i = 0; i < num_tuple; i++) {
-        gruppo_pt = inizializza_gruppo(PQgetvalue(utenti_db, i, 2), atoi(PQgetvalue(utenti_db, i, 3)));
-        Utenti->array_utenti[atoi(PQgetvalue(utenti_db, i, 1))] = gruppo_pt;
+        utente_pt = inizializza_utente(PQgetvalue(utenti_db, i, 2));
+        Utenti->array_utenti[atoi(PQgetvalue(utenti_db, i, 1))] = utente_pt;
     }
 }
 

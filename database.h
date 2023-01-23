@@ -8,22 +8,24 @@
 PGconn* connetti_db(const char* const connstring);
 void disconnetti_db(PGconn* conn);
 
-PGresult *select_gruppi_db();
-PGresult *select_utenti_db();
-PGresult *select_membership_db();
-PGresult *select_messaggi_db();
-PGresult *select_notifiche_db();
+PGresult *select_gruppi_utente(const char * const nome_utente);
+PGresult *select_messaggi_gruppi_utente(const char * const nome_gruppo);
+PGresult *select_notifiche_gruppi_utente(const char * const nome_gruppo);
 
-int insert_gruppo_db(const int gruppo_id, const char * const nome, const int amministratore_id);
-int insert_utente_db(const int utente_id, const char * const nome, const char * const password);
-int insert_membership_db(const int utente_id, const int gruppo_id);
-int insert_messaggio_db(const int mittente_id, const int gruppo_id, char * contenuto, const long long int minutaggio);
-int insert_notifica_db(const int utente_notificante_id, const int gruppo_id);
+int insert_gruppo_db(const char * const nome, const char * const amministratore);
+int insert_utente_db(const char * const nome, const char * const password);
+int insert_membership_db(const char * const nome_utente, const char * const nome_gruppo);
+int insert_messaggio_db(const char * const nome_utente, const char * const nome_gruppo, const char * const  contenuto, const long long int minutaggio);
+int insert_notifica_db(const char * const nome_utente, const char * const nome_gruppo);
 
-int delete_membership_db(const int utente_id, const int gruppo_id);
-int delete_notifica_db(const int utente_notificante_id, const int gruppo_id);
+int delete_membership_db(const char * const nome_utente, const char * const nome_gruppo);
+int delete_notifica_db(const char * const nome_utente, const char * const nome_gruppo);
 
-PGresult *check_se_registrato(const char* const nome, const char* const password);
+PGresult *check_se_utente_registrato(const char* const nome, const char* const password);
+PGresult *check_se_gruppo_registrato(const char* const nome);
+PGresult *check_se_utente_amministratore(const char* const nome_utente, const char* const nome_gruppo);
+
+int update_stato_connessione_utente(const char * const nome, const int socket);
 
 void stampa_result_query(PGresult *result_query);
 

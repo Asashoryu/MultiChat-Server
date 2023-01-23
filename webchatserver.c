@@ -176,6 +176,7 @@ int main() {
 				inizio = strstr(buffer, "nome=");
 				inizio += strlen("nome=");
 				fine = strstr(inizio, "\r\n");
+
 				if (inizio && fine) {
 					dimensione = fine-inizio;
 					printf("dimensione %d\n", dimensione);
@@ -189,7 +190,7 @@ int main() {
 
 				inizio = strstr(buffer, "password=");
 				inizio += strlen("password=");
-				fine = strstr(inizio, "\r\n");
+				fine = strstr(inizio, "\r\n");		
 				if (inizio && fine) {
 					dimensione = fine-inizio;
 					printf("dimensione %d\n", dimensione);

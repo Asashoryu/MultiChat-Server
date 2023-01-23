@@ -29,7 +29,7 @@
 char *parse_comando(const char * const pacchetto);
 void parse_login(const char * const pacchetto, char * nome, char * password);
 void parse_signin(const char * const pacchetto, char * nome, char * password);
-void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, int utente_id);
+void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, int * utente_id);
 void parse_messaggio(const char * const pacchetto, int gruppo_id, int utente_id, char * messaggio);
 
 char *format_response(const int codice_comando);
