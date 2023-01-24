@@ -25,6 +25,7 @@ int delete_notifica_db(const char * const nome_utente, const char * const nome_g
 PGresult *check_se_utente_registrato(const char* const nome, const char* const password);
 PGresult *check_se_gruppo_registrato(const char* const nome);
 PGresult *check_se_utente_amministratore(const char* const nome_utente, const char* const nome_gruppo);
+PGresult *check_se_utente_connesso(const char * const nome_utente);
 
 int update_stato_connessione_utente(const char * const nome, const int socket);
 

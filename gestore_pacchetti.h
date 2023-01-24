@@ -40,7 +40,7 @@ void parse_login(const char * const pacchetto, char * nome, char * password);
 void parse_signin(const char * const pacchetto, char * nome, char * password);
 void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente);
 void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * messaggio, char * minutaggio);
-void parse_accetta_notifica(const char * const pacchetto, char * nome_utente, char * nome_gruppo);
+void parse_accetta_notifica(const char * const pacchetto, char * nome_utente, char * nome_gruppo, char * nome_richiedente);
 
 char *alloca_comando();
 void alloca_nome_e_password(char **nome, char **password);
