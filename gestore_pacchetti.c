@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "gestore_pacchetti.h"
+
 #define LN_STR 1000
 
 char *parse_comando(char *pacchetto)
@@ -206,3 +208,29 @@ void dealloca_messaggio_e_minutaggio(char **messaggio, char **minutaggio)
     *messaggio = NULL;
     *minutaggio = NULL;
 }
+
+////// formatting ///////
+
+void format_login_risposta(const int comando, char * const pacchetto_da_spedire) {
+    if (comando == LOGINOK) {
+
+    }
+}
+void format_signin_risposta(const int comando, char * const pacchetto_da_spedire);
+void format_crea_gruppo_risposta(const int comando, char * const pacchetto_da_spedire);
+void format_messaggio_risposta(const int comando, char * const pacchetto_da_spedire);
+void format_cerca_gruppo(const int comando, char * const pacchetto_da_spedire);
+void format_manda_notifica(const int comando, char * const pacchetto_da_spedire);
+void format_accetta_notifica(const int comando, char * const pacchetto_da_spedire);
+void format_pacchetto_non_riconosciuto(const int comando, char * const pacchetto_da_spedire);
+
+void format_add_inizio_gruppi(char * pacchetto_da_spedire);
+void format_add_fine_gruppi(char * pacchetto_da_spedire);
+void format_add_inizio_messaggi(char * pacchetto_da_spedire);
+void format_add_fine_messaggi(char * pacchetto_da_spedire);
+
+void format_add_nome_gruppo(char * pacchetto_da_spedire, const char * const nome_gruppo);
+void format_add_mittente_messaggio(char * pacchetto_da_spedire, const char * const nome_mittente_messaggio);
+void format_add_contenuto_messaggio(char * pacchetto_da_spedire, const char * const contenuto_messaggio);
+void format_add_minutaggio_messaggio(char * pacchetto_da_spedire, const char * const minutaggio_messaggio);
+void format_add_notificante(char * pacchetto_da_spedire, const char * const nome_notificante);

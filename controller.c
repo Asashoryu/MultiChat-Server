@@ -225,18 +225,85 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     }
 }
 
-char * processa_manda_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+    PGresult *gruppi_trovati;
     char * nome_utente;
     char * nome_gruppo;
-    parse_manda_notifica()
+
+    parse_cerca_gruppo(pacchetto_da_spedire, nome_utente, nome_gruppo);
+
+    gruppi_trovati = select_gruppi_senza_utente(nome_utente, nome_gruppo);
+    if (gruppi_trovati == NULL) {
+        format_cerca_gruppo(SEARCHGRUPERR, pacchetto_da_spedire);
+    }
+    else {
+        format_cerca_gruppo(SEARCHGRUPOK, pacchetto_da_spedire);
+        format_add_inizio_gruppi(pacchetto_da_spedire);
+        for (int i = 0; i < PQntuples(gruppi_trovati); i++) {
+            format_add_nome_gruppo(pacchetto_da_spedire, PQgetvalue(gruppi_trovati, i, 0));
+        }
+        format_add_fine_gruppi(pacchetto_da_spedire);
+    }
+}
+
+char * processa_manda_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+    int inserito;
+
+    char * nome_utente;
+    char * nome_gruppo;
+    parse_manda_notifica(pacchetto_da_spedire, nome_utente, nome_gruppo);
+    
+    inserito = insert_notifica_db(nome_utente, nome_gruppo);
+    if (inserito == 0) {
+        format_manda_notifica(SENDNOTIFICAERR, pacchetto_da_spedire);
+    }
+    else {
+        format_manda_notifica(SENDNOTIFICA, pacchetto_da_spedire);
+    }
 }
 
 char *processa_accetta_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+    PGresult *messaggi_gruppo;
+    int rimossa = 0;
+    int inserito = 0;
+
     char * nome_gruppo;
     char * nome_utente;
     char * nome_richiedente;
+
     parse_accetta_notifica(pacchetto, nome_utente, nome_gruppo, nome_richiedente);
 
+    inserito = insert_membership_db(nome_richiedente, nome_gruppo);
+    
+    if (inserito == 0) {
+        format_accetta_notifica(ACCETTAUTERR, pacchetto_da_spedire);
+    }
+    else {
+        rimossa = delete_notifica_db(nome_richiedente, nome_gruppo);
+        if (rimossa == 0) {
+            format_accetta_notifica(ACCETTAUTERR, pacchetto_da_spedire);
+        }
+        else {
+            messaggi_gruppo = select_messaggi_gruppo_utente(nome_gruppo);
+            format_accetta_notifica(ACCETTAUTOK, pacchetto_da_spedire);
+
+            format_add_inizio_gruppi(pacchetto_da_spedire);
+
+            format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
+            format_add_inizio_messaggi(pacchetto_da_spedire);
+
+            // aggiungi i messaggi
+            for (int j = 0; j < PQntuples(messaggi_gruppo); j++) {
+                format_add_mittente_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppo, j, 1));
+                format_add_contenuto_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppo, j, 3));
+                format_add_minutaggio_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppo, j, 4));
+            }
+
+            format_add_fine_messaggi(pacchetto_da_spedire);
+
+            format_add_fine_gruppi(pacchetto_da_spedire);
+        }
+    }
 }
 
 char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
