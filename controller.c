@@ -16,7 +16,7 @@ void dealloca_pacchetto(char * pacchetto) {
     free(pacchetto);
 }
 
-void processa(const char * const pacchetto, const * pacchetto_da_spedire, int ** array_socket, int * dim) {
+void processa(const char * const pacchetto, char *  pacchetto_da_spedire, int ** array_socket, int * dim) {
     int comando;
 
     comando = parse_comando(pacchetto);
@@ -34,8 +34,14 @@ void processa(const char * const pacchetto, const * pacchetto_da_spedire, int **
     else if (comando == SENDMESS) {
         processa_messaggio(pacchetto, pacchetto_da_spedire, array_socket, dim);
     }
+    else if (comando == SEARCHGRUP) {
+        processa_cerca_gruppo(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else if (comando == SENDNOTIFICA) {
+        processa_manda_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
     else if (comando == ACCETTAUT) {
-        processa_acc(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_accetta_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
     }
     else {
         processa_pacchetto_non_riconosciuto(pacchetto, pacchetto_da_spedire, array_socket, dim);
@@ -47,6 +53,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
 
     char * nome;
     char * password;
+    alloca_nome_e_password(&nome, &password);
     parse_login(pacchetto, nome, password);
 
     utente_registrato = check_se_utente_registrato(nome, password);
@@ -67,11 +74,6 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             PGresult * notifiche_gruppi_utente;
 
             char nome_gruppo[100];
-
-            char nome_mittente_messaggio[100];
-            char contenuto_messaggio[1000];
-            char minutaggio_messaggio[20];
-            
             char nome_notificante[100];
 
             int num_gruppi_utente;
@@ -88,7 +90,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             for (int i = 0; i < num_gruppi_utente; i++) {
                 strcpy(nome_gruppo, PQgetvalue(gruppi_utente, i, 0));
 
-                format_add_nome_gruppo(pacchetto_da_spedire);
+                format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
 
                 messaggi_gruppi_utente = select_messaggi_gruppo_utente(nome_gruppo);
                 num_messaggi_gruppo = PQntuples(messaggi_gruppi_utente);
@@ -96,13 +98,9 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
                 format_add_inizio_messaggi(pacchetto_da_spedire);
                 // aggiungi i messaggi
                 for (int j = 0; j < num_messaggi_gruppo; j++) {
-                    strcpy(nome_mittente_messaggio, PQgetvalue(messaggi_gruppi_utente, j, 1));
-                    strcpy(contenuto_messaggio, PQgetvalue(contenuto_messaggio, j, 3));
-                    strcpy(minutaggio_messaggio, PQgetvalue(contenuto_messaggio, j, 4));
-
-                    format_add_mittente_messaggio(pacchetto_da_spedire, nome_mittente_messaggio);
-                    format_add_contenuto_messaggio(pacchetto_da_spedire, contenuto_messaggio);
-                    format_add_minutaggio_messaggio(pacchetto_da_spedire, minutaggio_messaggio);
+                    format_add_mittente_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 1));
+                    format_add_contenuto_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 3));
+                    format_add_minutaggio_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 4));
                 }
 
                 PQclear(messaggi_gruppi_utente);
@@ -115,9 +113,8 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
                 format_add_inizio_notifiche(pacchetto_da_spedire);
                 // aggiunti le notifiche
                 for (int k = 0; k < num_messaggi_gruppo; k++) {
-                    strcpy(nome_notificante, PQgetvalue(notifiche_gruppi_utente, k, 0));
-
-                    format_add_notificante(pacchetto_da_spedire, nome_notificante);
+                    format_add_notificante(pacchetto_da_spedire, PQgetvalue(notifiche_gruppi_utente, k, 0));
+                    format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
                 }
 
                 PQclear(notifiche_gruppi_utente);
@@ -132,6 +129,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
     }
 
     PQclear(utente_registrato); 
+    dealloca_nome_password(&nome, &password);
 
     return pacchetto_da_spedire;
 }
@@ -165,6 +163,8 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
             }
         }
     }
+
+    PQclear(utente_registrato);
 }
 
 void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -182,15 +182,15 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
         format_crea_gruppo_risposta(CREAGRUPERR, pacchetto_da_spedire);
     }
     else {
-        inserito = insert_gruppo_db(nome_gruppo, nome_utente);
-        // errore DB
-        if (inserito == 0) {
-            format_crea_gruppo_risposta(CREAGRUPERR, pacchetto_da_spedire);
+        // gruppo già esistente
+        if (PQntuples(gruppo_registrato == 1)) {
+            format_crea_gruppo_risposta(CREAGRUPGIAREGISTRATO, pacchetto_da_spedire);
         }
         else {
-            // gruppo già esistente
-            if (PQntuples(gruppo_registrato == 1)) {
-                format_crea_gruppo_risposta(CREAGRUPGIAREGISTRATO, pacchetto_da_spedire);
+            inserito = insert_gruppo_db(nome_gruppo, nome_utente);
+            // errore DB
+            if (inserito == 0) {
+                format_crea_gruppo_risposta(CREAGRUPERR, pacchetto_da_spedire);
             }
             // se non ancora registrato
             else {
@@ -198,6 +198,8 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
             }
         }
     }
+
+    PQclear(gruppo_registrato);
 }
 
 void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -223,6 +225,8 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
         format_add_minutaggio_messaggio(pacchetto_da_spedire, minutaggio);
         format_add_fine_messaggi(pacchetto_da_spedire);
     }
+
+    PQclear(utenti_connessi);
 }
 
 char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -244,6 +248,8 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
         }
         format_add_fine_gruppi(pacchetto_da_spedire);
     }
+
+    PQclear(gruppi_trovati);
 }
 
 char * processa_manda_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -259,6 +265,9 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
     }
     else {
         format_manda_notifica(SENDNOTIFICA, pacchetto_da_spedire);
+        format_add_inizio_notifiche(pacchetto_da_spedire);
+        format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
+        format_add_fine_notifiche(pacchetto_da_spedire);
     }
 }
 
@@ -302,6 +311,8 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
             format_add_fine_messaggi(pacchetto_da_spedire);
 
             format_add_fine_gruppi(pacchetto_da_spedire);
+
+            PQclear(messaggi_gruppo);
         }
     }
 }

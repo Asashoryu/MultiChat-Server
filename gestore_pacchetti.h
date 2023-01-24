@@ -81,11 +81,14 @@ void format_add_inizio_gruppi(char * pacchetto_da_spedire);
 void format_add_fine_gruppi(char * pacchetto_da_spedire);
 void format_add_inizio_messaggi(char * pacchetto_da_spedire);
 void format_add_fine_messaggi(char * pacchetto_da_spedire);
+void format_add_inizio_notifiche(char * pacchetto_da_spedire);
+void format_add_fine_notifiche(char * pacchetto_da_spedire);
 
 void format_add_nome_gruppo(char * pacchetto_da_spedire, const char * const nome_gruppo);
 void format_add_mittente_messaggio(char * pacchetto_da_spedire, const char * const nome_mittente_messaggio);
 void format_add_contenuto_messaggio(char * pacchetto_da_spedire, const char * const contenuto_messaggio);
 void format_add_minutaggio_messaggio(char * pacchetto_da_spedire, const char * const minutaggio_messaggio);
 void format_add_notificante(char * pacchetto_da_spedire, const char * const nome_notificante);
+void format_add_gruppo_notificato(char * pacchetto_da_spedire, const char * const gruppo_notificato);
 
 #endif
