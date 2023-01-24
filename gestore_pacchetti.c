@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#define LN_STR 1000
+
 char *parse_comando(char *pacchetto)
 {
     char *inizio = NULL;
@@ -143,44 +145,41 @@ void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, ch
     }
 }
 
-// void alloca_comando(char *cmd)
-// {
-//     cmd = malloc (200*sizeof(char*));
-// }
+char *alloca_comando()
+{
+    return malloc (LN_STR*sizeof(char*));
+}
 
-// char *alloca_nome()
-// {
-//     char *nome = malloc (200*sizeof(char*));
-//     return nome;
-// }
+void alloca_nome_e_password(char **nome, char **password)
+{
+    *nome = malloc (LN_STR*sizeof(char));
+    *password = malloc (LN_STR*sizeof(char));
+}
 
-// char *alloca_password()
-// {
-//     char *password = malloc (200*sizeof(char*));
-//     return password;
-// }
+void alloca_gruppo_e_nome(char **gruppo, char **nome)
+{
+    *gruppo = malloc (LN_STR*sizeof(char));
+    *nome = malloc (LN_STR*sizeof(char));
+}
 
-// void alloca_gruppo_e_nome(char *gruppo, char *nome)
-// {
-//     gruppo = malloc (200*sizeof(char*));
-//     nome = malloc (200*sizeof(char*));
-// }
+void alloca_messaggio(char *messaggio)
+{
+    messaggio = malloc (200*sizeof(char*));
+}
 
-// void alloca_messaggio(char *messaggio)
-// {
-//     messaggio = malloc (200*sizeof(char*));
-// }
+void dealloca_comando(char **cmd)
+{
+    free(*cmd);
+    *cmd = NULL;
+}
 
-// void dealloca_comando(char *cmd)
-// {
-//     free(cmd);
-// }
-
-// void dealloca_nome_password(char **nome, char **password)
-// {
-//     free(nome);
-//     free(password);
-// }
+void dealloca_nome_password(char **nome, char **password)
+{
+    free(*nome);
+    free(*password);
+    *nome = NULL;
+    *password = NULL;
+}
 
 // void dealloca_gruppo_e_nome(char *gruppo, char *nome)
 // {

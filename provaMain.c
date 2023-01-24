@@ -7,12 +7,23 @@
 int main ()
 {
     char pac[200];
-    strcpy (pac, "cmd=100\r\nnome=Alex\r\nutente=pass\r\n\r\n");
+    char *cmd = NULL;
+    char *nome = NULL;
+    char *password = NULL;
+    strcpy (pac, "cmd=100\r\nnome=Alex\r\npassword=pass\r\n\r\n");
     // printf ("%s\n",pac);
-    char *nome = alloca_nome();
-    char *password = alloca_password();
+    cmd = alloca_comando();
+    cmd = parse_comando (pac);
+    alloca_nome_e_password (&nome,&password);
+    // nome = malloc (200*sizeof(char));
+    // password = malloc (200*sizeof(char));
     parse_login (pac,nome,password);
-    printf ("l'utente %s nel gruppo %s\n",nome,password);
-    dealloca_nome_password (nome,password);
+    printf ("comando = %s\n",cmd);
+    dealloca_comando(&cmd);
+    dealloca_nome_password(&nome,&password);
+    if (nome == NULL && password == NULL)
+    {
+        printf ("Ok\n");
+    }
     return 0;
 }
