@@ -6,6 +6,8 @@
 // seconda cifra=(mittente: 0 se client, 1 se server);
 // terza cifra=(flag accessorio: 0 no flag, 1 se il comando è stato ricevuto, 2 errore generico)
 
+#define LN_STR 1000
+
 // comandi (client)
 #define LOGIN 100
 #define SIGNIN 200
@@ -40,14 +42,13 @@ void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * 
 void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * messaggio, char * minutaggio);
 void parse_accetta_notifica(const char * const pacchetto, char * nome_utente, char * nome_gruppo, char * nome_richiedente);
 
-// void alloca_comando(char *cmd);
-// char *alloca_nome();
-// char *alloca_password();
-// void alloca_gruppo_e_nome(char *gruppo, char *nome);
+char *alloca_comando();
+void alloca_nome_e_password(char **nome, char **password);
+void alloca_gruppo_e_nome(char **gruppo, char **nome);
 // void alloca_messaggio(char *messaggio);
 
-// void dealloca_comando(char *cmd);
-// void dealloca_nome_password(char *nome, char *password);
+void dealloca_comando(char **cmd);
+void dealloca_nome_password(char **nome, char **password);
 // void dealloca_gruppo_e_nome(char *gruppo, char *nome);
 // void dealloca_messaggio(char *messaggio);
 
