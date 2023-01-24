@@ -58,7 +58,7 @@ PGresult *select_gruppi_utente(const char * const nome_utente) {
     return gruppi_db;
 }
 
-PGresult *select_messaggi_gruppi_utente(const char * const nome_gruppo) {
+PGresult *select_messaggi_gruppo_utente(const char * const nome_gruppo) {
     PGconn *miaconn   = NULL;
     PGresult *messaggi_db = NULL;
     char comandoSQL[2000];
@@ -88,7 +88,7 @@ PGresult *select_messaggi_gruppi_utente(const char * const nome_gruppo) {
     return messaggi_db;
 }
 
-PGresult *select_notifiche_gruppi_utente(const char * const nome_gruppo) {
+PGresult *select_notifiche_gruppo_utente(const char * const nome_gruppo) {
     PGconn *miaconn   = NULL;
     PGresult *notifiche_db = NULL;
     char comandoSQL[2000];
@@ -151,6 +151,36 @@ int insert_gruppo_db(const char * const nome, const char * const amministratore)
 
     disconnetti_db(miaconn);
     return flag;
+}
+PGresult *select_utenti_connessi() {
+
+    PGconn *miaconn   = NULL;
+        PGresult *utente_registrato_db = NULL;
+        char comandoSQL[2000];
+        char errore[1000];
+
+        miaconn = connetti_db(CONNSTRINGA);
+
+        if(miaconn != NULL)
+        {
+            sprintf(comandoSQL,"select * from utente WHERE connessione IS NOT NULL");
+            utente_registrato_db = PQexec(miaconn, comandoSQL);
+            strcpy(errore, PQresultErrorMessage(utente_registrato_db));
+            if(strlen(errore) > 0)
+            {
+                printf("%s\n",errore);
+                printf("DB: errore nel comando select, utenti non trovati\n");
+                PQclear(utente_registrato_db);
+                utente_registrato_db = NULL;
+            }
+        }
+        else
+        {
+            printf("DB: Database non trovato, utenti non caricati\n");
+        }
+
+        disconnetti_db(miaconn);
+        return utente_registrato_db;
 }
 
 int insert_utente_db(const char * const nome, const char * const password) {
@@ -223,7 +253,7 @@ int insert_membership_db(const char * const nome_utente, const char * const nome
     return flag;
 }
 
-int insert_messaggio_db(const char * const nome_utente, const char * const nome_gruppo, const char * const  contenuto, const long long int minutaggio) {
+int insert_messaggio_db(const char * const nome_utente, const char * const nome_gruppo, const char * const  contenuto, const char * const minutaggio) {
     PGconn *miaconn;
     PGresult *exe;
     char comandoSQL[2000];
@@ -234,7 +264,7 @@ int insert_messaggio_db(const char * const nome_utente, const char * const nome_
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into messaggio(nome_utente, nome_gruppo, contenuto, minutaggio) values ('%s', '%s', '%s', %lld)", nome_utente, nome_gruppo, contenuto, minutaggio);
+        sprintf(comandoSQL,"Insert into messaggio(nome_utente, nome_gruppo, contenuto, minutaggio) values ('%s', '%s', '%s', %s)", nome_utente, nome_gruppo, contenuto, minutaggio);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
