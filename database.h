@@ -8,6 +8,7 @@
 PGconn* connetti_db(const char* const connstring);
 void disconnetti_db(PGconn* conn);
 
+//restituisce tutti i gruppi a cui appartiene l'utente
 PGresult *select_gruppi_utente(const char * const nome_utente);
 PGresult *select_messaggi_gruppo_utente(const char * const nome_gruppo);
 PGresult *select_notifiche_gruppo_utente(const char * const nome_gruppo);
