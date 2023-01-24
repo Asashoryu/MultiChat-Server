@@ -225,11 +225,18 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     }
 }
 
+char * processa_manda_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+    char * nome_utente;
+    char * nome_gruppo;
+    parse_manda_notifica()
+}
+
 char *processa_accetta_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     char * nome_gruppo;
     char * nome_utente;
-    parse_accetta_notifica(pacchetto, nome_utente, nome_gruppo);
-    
+    char * nome_richiedente;
+    parse_accetta_notifica(pacchetto, nome_utente, nome_gruppo, nome_richiedente);
+
 }
 
 char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
