@@ -123,7 +123,9 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
     char * nome;
     char * password;
     alloca_signin(&nome, &password);
-    parse_login(pacchetto, nome, password);
+    parse_signin(pacchetto, nome, password);
+
+    //printf("Debug: signin %s\n", nome);
     utente_registrato = check_se_utente_registrato(nome, password);
     //errore DB
     if (utente_registrato == NULL) {
@@ -226,7 +228,7 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
     alloca_cerca_gruppo(&nome_gruppo, &nome_utente);
     parse_cerca_gruppo(pacchetto_da_spedire, nome_utente, nome_gruppo);
 
-    gruppi_trovati = select_gruppi_senza_utente(nome_utente, nome_gruppo);
+    gruppi_trovati = select_gruppi_senza_utente(nome_utente);
     if (gruppi_trovati == NULL) {
         format_cerca_gruppo(SEARCHGRUPERR, pacchetto_da_spedire);
     }
@@ -328,10 +330,11 @@ void processa(const char * const pacchetto, char **  pacchetto_da_spedire, int *
     *pacchetto_da_spedire = alloca_pacchetto();
 
     if (comando == LOGIN) {
-        printf("Debug: entrato in login");
+        printf("Debug: entrato in login\n");
         processa_login(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == SIGNIN) {
+        printf("Debug: entrato in signin\n");
         processa_signin(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == CREAGRUP) {
