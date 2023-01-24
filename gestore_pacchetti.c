@@ -129,7 +129,7 @@ void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * no
     }
 }
 
-void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente)
+void parse_cerca_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente)
 {
     char *inizio;
     char *fine;
@@ -153,6 +153,70 @@ void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, ch
     {
         dim = fine-inizio;
         strncpy (nome_utente,inizio,dim);
+    }
+}
+
+void parse_manda_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente)
+{
+    char *inizio;
+    char *fine;
+    int dim;
+    char comando[200];
+
+    strcpy (comando,pacchetto);
+    inizio = strstr (comando,"gruppo=");
+    inizio += strlen ("gruppo=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_gruppo,inizio,dim);
+    }
+
+    inizio = strstr (comando,"utente=");
+    inizio += strlen ("utente=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_utente,inizio,dim);
+    }
+}
+
+void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * nome_richiedente)
+{
+    char *inizio;
+    char *fine;
+    int dim;
+    char comando[200];
+
+    strcpy (comando,pacchetto);
+    inizio = strstr (comando,"gruppo=");
+    inizio += strlen ("gruppo=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_gruppo,inizio,dim);
+    }
+
+    inizio = strstr (comando,"utente=");
+    inizio += strlen ("utente=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_utente,inizio,dim);
+    }
+
+    strcpy (comando,pacchetto);
+    inizio = strstr (comando,"richiedente=");
+    inizio += strlen ("richiedente=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_richiedente,inizio,dim);
     }
 }
 
