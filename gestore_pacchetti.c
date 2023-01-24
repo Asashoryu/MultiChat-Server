@@ -225,22 +225,50 @@ char *alloca_comando()
     return malloc (LN_STR*sizeof(char*));
 }
 
-void alloca_nome_e_password(char **nome, char **password)
+void alloca_login(char **nome, char **password)
 {
     *nome = malloc (LN_STR*sizeof(char));
     *password = malloc (LN_STR*sizeof(char));
 }
 
-void alloca_gruppo_e_utente(char **gruppo, char **nome)
+void alloca_sigin(char **nome, char **password)
 {
-    *gruppo = malloc (LN_STR*sizeof(char));
     *nome = malloc (LN_STR*sizeof(char));
+    *password = malloc (LN_STR*sizeof(char));
 }
 
-void alloca_messaggio_e_minutaggio(char **messaggio, char **minutaggio)
+
+void alloca_crea_gruppo(char **nome_gruppo, char **nome_utente)
 {
+    *nome_gruppo = malloc (LN_STR*sizeof(char));
+    *nome_utente = malloc (LN_STR*sizeof(char));
+}
+
+void alloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio)
+{
+    *nome_gruppo = malloc (LN_STR*sizeof(char));
+    *nome_utente = malloc (LN_STR*sizeof(char));
     *messaggio = malloc (LN_STR*sizeof(char));
     *minutaggio = malloc (LN_STR*sizeof(char));
+}
+
+void alloca_cerca_gruppo(char **nome_gruppo, char **nome_utente)
+{
+    *nome_gruppo = malloc (LN_STR*sizeof(char));
+    *nome_utente = malloc (LN_STR*sizeof(char));
+}
+
+void alloca_manda_notifica(char **nome_gruppo, char **nome_utente)
+{
+    *nome_gruppo = malloc (LN_STR*sizeof(char));
+    *nome_utente = malloc (LN_STR*sizeof(char));
+}
+
+void alloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente)
+{
+    *nome_gruppo = malloc (LN_STR*sizeof(char));
+    *nome_utente = malloc (LN_STR*sizeof(char));
+    *nome_rihiedente = malloc (LN_STR*sizeof(char));
 }
 
 void dealloca_comando(char **cmd)
@@ -249,7 +277,7 @@ void dealloca_comando(char **cmd)
     *cmd = NULL;
 }
 
-void dealloca_nome_password(char **nome, char **password)
+void dealloca_login(char **nome, char **password)
 {
     free(*nome);
     free(*password);
@@ -257,20 +285,56 @@ void dealloca_nome_password(char **nome, char **password)
     *password = NULL;
 }
 
-void dealloca_gruppo_e_utente (char **gruppo, char **nome)
+void dealloca_sigin(char **nome, char **password)
 {
-    free(*gruppo);
     free(*nome);
+    free(*password);
     *nome = NULL;
-    *gruppo = NULL;
+    *password = NULL;
 }
 
-void dealloca_messaggio_e_minutaggio(char **messaggio, char **minutaggio)
+void dealloca_crea_gruppo (char **nome_gruppo, char **nome_utente)
 {
+    free(*nome_gruppo);
+    free(*nome_utente);
+    *nome_gruppo = NULL;
+    *nome_utente = NULL;
+}
+
+void dealloca_messaggio_e_minutaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio)
+{
+    free (nome_gruppo);
+    free (nome_utente);
     free(*messaggio);
     free(*minutaggio);
     *messaggio = NULL;
     *minutaggio = NULL;
+    *nome_gruppo = NULL;
+    nome_utente = NULL;
+}
+
+void dealloca_cerca_gruppo(char **nome_gruppo, char **nome_utente)
+{
+    free(*nome_gruppo);
+    free(*nome_utente);
+    *nome_gruppo = NULL;
+    *nome_utente = NULL;
+}
+
+void dealloca_manda_notifica(char **nome_gruppo, char **nome_utente)
+{
+    free(*nome_gruppo);
+    free(*nome_utente);
+    *nome_gruppo = NULL;
+    *nome_utente = NULL;
+}
+
+void dealloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente)
+{
+    free(*nome_gruppo);
+    free(*nome_utente);
+    *nome_gruppo = NULL;
+    *nome_utente = NULL;
 }
 
 ////// formatting ///////

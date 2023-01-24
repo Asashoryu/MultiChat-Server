@@ -51,14 +51,22 @@ void parse_manda_notifica(const char * const pacchetto, char * nome_gruppo, char
 void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * nome_richiedente);
 
 char *alloca_comando();
-void alloca_nome_e_password(char **nome, char **password);
-void alloca_gruppo_e_utente(char **gruppo, char **nome);
-void alloca_messaggio_e_minutaggio(char **messaggio, char **minutaggio);
+void alloca_login(char **nome, char **password);
+void alloca_sigin(char **nome, char **password);
+void alloca_crea_gruppo(char **nome_gruppo, char **nome_utente);
+void alloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio);
+void alloca_cerca_gruppo(char **nome_gruppo, char **nome_utente);
+void alloca_manda_notifica(char **nome_gruppo, char **nome_utente);
+void alloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente);
 
 void dealloca_comando(char **cmd);
-void dealloca_nome_password(char **nome, char **password);
-void dealloca_gruppo_e_utente(char **gruppo, char **nome);
-void dealloca_messaggio_e_minutaggio(char **messaggio, char **minutaggio);
+void dealloca_login(char **nome, char **password);
+void dealloca_sigin(char **nome, char **password);
+void dealloca_crea_gruppo(char **nome_gruppo, char **nome_utente);
+void dealloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio);
+void dealloca_cerca_gruppo(char **nome_gruppo, char **nome_utente);
+void dealloca_manda_notifica(char **nome_gruppo, char **nome_utente);
+void dealloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente);
 
 void format_login_risposta(const int comando, char * const pacchetto_da_spedire);
 void format_signin_risposta(const int comando, char * const pacchetto_da_spedire);
