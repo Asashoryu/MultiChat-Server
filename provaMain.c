@@ -20,22 +20,23 @@ int main ()
     int num,i;
     PGresult *risultato;
     // strcpy (nome,"G1");
-    // strcpy (amministratore,"Alex");
+    //strcpy (amministratore,"Alex");
     // strcpy (password,"pass");
     // flag = insert_utente_db (amministratore,password);
     strcpy (user,"Patroccio");
     // flag = insert_utente_db (user,"Pietroclo");
+    //scanf ("%s",nome);
     // flag = insert_gruppo_db (nome,amministratore);
-    // flag = insert_membership_db (user,nome);
+    //flag = insert_membership_db (user,nome);
     // printf ("%d\n",flag);
     // strcpy (nome,"G20");
     // flag = insert_gruppo_db (nome,amministratore);
     // flag = insert_membership_db (user,nome);
-    risultato = select_gruppi_utente (user);
+    risultato = select_gruppi_senza_utente (user);
     num = PQntuples (risultato);
     for (i=0;i<num;i++)
     {
-        printf ("%s")
+        printf ("%s\n",PQgetvalue(risultato,i,0));
     }
     return 0;
 }
