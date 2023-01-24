@@ -82,7 +82,7 @@ void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * 
     }
 }
 
-void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * messaggio)
+void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * messaggio, char *minutaggio)
 {
     char *inizio;
     char *fine;
@@ -115,6 +115,15 @@ void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * no
     {
         dim = fine-inizio;
         strncpy (messaggio,inizio,dim);
+    }
+
+    inizio = strstr (comando,"minutaggio=");
+    inizio += strlen ("minutaggio=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (minutaggio,inizio,dim);
     }
 }
 
@@ -156,15 +165,16 @@ void alloca_nome_e_password(char **nome, char **password)
     *password = malloc (LN_STR*sizeof(char));
 }
 
-void alloca_gruppo_e_nome(char **gruppo, char **nome)
+void alloca_gruppo_e_utente(char **gruppo, char **nome)
 {
     *gruppo = malloc (LN_STR*sizeof(char));
     *nome = malloc (LN_STR*sizeof(char));
 }
 
-void alloca_messaggio(char *messaggio)
+void alloca_messaggio_e_minutaggio(char **messaggio, char **minutaggio)
 {
-    messaggio = malloc (200*sizeof(char*));
+    *messaggio = malloc (LN_STR*sizeof(char));
+    *minutaggio = malloc (LN_STR*sizeof(char));
 }
 
 void dealloca_comando(char **cmd)
@@ -181,13 +191,18 @@ void dealloca_nome_password(char **nome, char **password)
     *password = NULL;
 }
 
-// void dealloca_gruppo_e_nome(char *gruppo, char *nome)
-// {
-//     free(gruppo);
-//     free(nome);
-// }
+void dealloca_gruppo_e_utente (char **gruppo, char **nome)
+{
+    free(*gruppo);
+    free(*nome);
+    *nome = NULL;
+    *gruppo = NULL;
+}
 
-// void dealloca_messaggio(char *messaggio)
-// {
-//     free(messaggio);
-// }
+void dealloca_messaggio_e_minutaggio(char **messaggio, char **minutaggio)
+{
+    free(*messaggio);
+    free(*minutaggio);
+    *messaggio = NULL;
+    *minutaggio = NULL;
+}
