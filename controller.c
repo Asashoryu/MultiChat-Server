@@ -21,21 +21,24 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
 
     char * nome;
     char * password;
-    alloca_nome_e_password(&nome, &password);
+    alloca_login(&nome, &password);
     parse_login(pacchetto, nome, password);
-
+    printf(" 1");
     utente_registrato = check_se_utente_registrato(nome, password);
+    printf(" 2");
     //errore DB
     if (utente_registrato == NULL) {
         format_login_risposta(LOGINERR, pacchetto_da_spedire);
     }
     else {
+        printf(" 3");
         // se non registrato 
-        if (PQntuples(utente_registrato == 0)) {
+        if (PQntuples(utente_registrato) == 0) {
             format_login_risposta(LOGINNONTROVATO, pacchetto_da_spedire);
         }
         // se registrato
         else {
+            printf(" 4");
             // aggiungo i gruppi dell'utente
             PGresult * gruppi_utente;
             PGresult * messaggi_gruppi_utente;
@@ -47,38 +50,50 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             int num_gruppi_utente;
             int num_messaggi_gruppo;
             int num_notifiche_gruppo;
-
+            printf(" 5");
             format_login_risposta(LOGINOK, pacchetto_da_spedire);
-
+            printf(" 6");
             gruppi_utente = select_gruppi_utente(nome);
+            printf(" 7");
             num_gruppi_utente = PQntuples(gruppi_utente);
+            printf(" 8");
 
             format_add_inizio_gruppi(pacchetto_da_spedire);
+            printf(" 9");
             // aggiungi i gruppi
             for (int i = 0; i < num_gruppi_utente; i++) {
                 strcpy(nome_gruppo, PQgetvalue(gruppi_utente, i, 0));
+                printf(" 10");
 
                 format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
+                printf(" 11");
 
                 messaggi_gruppi_utente = select_messaggi_gruppo_utente(nome_gruppo);
+                printf(" 12");
                 num_messaggi_gruppo = PQntuples(messaggi_gruppi_utente);
+                printf(" 13");
 
                 format_add_inizio_messaggi(pacchetto_da_spedire);
+                printf(" 14");
                 // aggiungi i messaggi
                 for (int j = 0; j < num_messaggi_gruppo; j++) {
                     format_add_mittente_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 1));
                     format_add_contenuto_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 3));
                     format_add_minutaggio_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 4));
                 }
+                printf(" 15");
 
                 PQclear(messaggi_gruppi_utente);
 
                 format_add_fine_messaggi(pacchetto_da_spedire);
+                printf(" 16");
 
                 notifiche_gruppi_utente = select_notifiche_gruppo_utente(nome_gruppo);
+                printf(" 17");
                 num_notifiche_gruppo = PQntuples(notifiche_gruppi_utente);
 
                 format_add_inizio_notifiche(pacchetto_da_spedire);
+                printf(" 18");
                 // aggiunti le notifiche
                 for (int k = 0; k < num_messaggi_gruppo; k++) {
                     format_add_notificante(pacchetto_da_spedire, PQgetvalue(notifiche_gruppi_utente, k, 0));
@@ -86,6 +101,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
                 }
 
                 PQclear(notifiche_gruppi_utente);
+                printf(" 19");
 
                 format_add_fine_notifiche(pacchetto_da_spedire);
 
@@ -97,9 +113,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
     }
 
     PQclear(utente_registrato); 
-    dealloca_nome_password(&nome, &password);
-
-    return pacchetto_da_spedire;
+    dealloca_login(&nome, &password);
 }
 
 void processa_signin(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -122,7 +136,7 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
         }
         else {
             // se utente guà registrato
-            if (PQntuples(utente_registrato == 1)) {
+            if (PQntuples(utente_registrato) == 1) {
                 format_signin_risposta(SIGNGIAREGISTRATO, pacchetto_da_spedire);
             }
             // se non ancora registrato
@@ -151,7 +165,7 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
     }
     else {
         // gruppo già esistente
-        if (PQntuples(gruppo_registrato == 1)) {
+        if (PQntuples(gruppo_registrato) == 1) {
             format_crea_gruppo_risposta(CREAGRUPGIAREGISTRATO, pacchetto_da_spedire);
         }
         else {
@@ -293,9 +307,10 @@ void processa(const char * const pacchetto, char *  pacchetto_da_spedire, int **
     int comando;
 
     comando = parse_comando(pacchetto);
-    pacchetto_da_spedire = alloca_pacchetto;
+    pacchetto_da_spedire = alloca_pacchetto();
 
     if (comando == LOGIN) {
+        printf("Debug: entrato in login");
         processa_login(pacchetto, pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == SIGNIN) {
@@ -319,4 +334,5 @@ void processa(const char * const pacchetto, char *  pacchetto_da_spedire, int **
     else {
         processa_pacchetto_non_riconosciuto(pacchetto, pacchetto_da_spedire, array_socket, dim);
     }
+
 }

@@ -38,7 +38,7 @@ PGresult *select_gruppi_utente(const char * const nome_utente) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from gruppo where nome = '%s' ORDER BY nome", nome_utente);
+        sprintf(comandoSQL,"select * from membership where nome_utente = '%s' ORDER BY nome_gruppo", nome_utente);
         gruppi_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(gruppi_db));
         if(strlen(errore) > 0)

@@ -8,13 +8,14 @@
 
 #define LN_STR 1000
 
-char *parse_comando(char *pacchetto)
+int parse_comando(const char * const pacchetto)
 {
     char *inizio = NULL;
     char *fine = NULL;
     int dim = 0;
     char comando[200];
     char *cmd = malloc(200*sizeof(char));
+    int cmd_valore = 0;
 
     strcpy (comando, pacchetto);
     inizio = strstr (comando,"cmd=");
@@ -25,9 +26,10 @@ char *parse_comando(char *pacchetto)
         dim = fine-inizio;
         strncpy (cmd,inizio,dim);
         cmd[dim] = '\0';
-        return cmd;
+        cmd_valore = atoi(cmd);
+        return cmd_valore;
     }
-    return NULL;
+    return 0;
 }
 
 void parse_login(const char * const pacchetto, char * nome, char * password)
@@ -269,12 +271,6 @@ void alloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome
     *nome_gruppo = malloc (LN_STR*sizeof(char));
     *nome_utente = malloc (LN_STR*sizeof(char));
     *nome_rihiedente = malloc (LN_STR*sizeof(char));
-}
-
-void dealloca_comando(char **cmd)
-{
-    free(*cmd);
-    *cmd = NULL;
 }
 
 void dealloca_login(char **nome, char **password)

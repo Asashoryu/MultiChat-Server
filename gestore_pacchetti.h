@@ -41,7 +41,7 @@
 #define PACCHETTONONCOMPRESO 999
 
 // restituisce il tipo di comando ricevuto dal pacchetto
-char *parse_comando(char *pacchetto);
+int parse_comando(const char * const pacchetto);
 void parse_login(const char * const pacchetto, char * nome, char * password);
 void parse_signin(const char * const pacchetto, char * nome, char * password);
 void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente);
@@ -59,7 +59,6 @@ void alloca_cerca_gruppo(char **nome_gruppo, char **nome_utente);
 void alloca_manda_notifica(char **nome_gruppo, char **nome_utente);
 void alloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente);
 
-void dealloca_comando(char **cmd);
 void dealloca_login(char **nome, char **password);
 void dealloca_sigin(char **nome, char **password);
 void dealloca_crea_gruppo(char **nome_gruppo, char **nome_utente);
