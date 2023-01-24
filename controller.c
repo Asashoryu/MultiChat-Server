@@ -16,38 +16,6 @@ void dealloca_pacchetto(char * pacchetto) {
     free(pacchetto);
 }
 
-void processa(const char * const pacchetto, char *  pacchetto_da_spedire, int ** array_socket, int * dim) {
-    int comando;
-
-    comando = parse_comando(pacchetto);
-    pacchetto_da_spedire = alloca_pacchetto;
-
-    if (comando == LOGIN) {
-        processa_login(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-    else if (comando == SIGNIN) {
-        processa_signin(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-    else if (comando == CREAGRUP) {
-        processa_crea_gruppo(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-    else if (comando == SENDMESS) {
-        processa_messaggio(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-    else if (comando == SEARCHGRUP) {
-        processa_cerca_gruppo(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-    else if (comando == SENDNOTIFICA) {
-        processa_manda_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-    else if (comando == ACCETTAUT) {
-        processa_accetta_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-    else {
-        processa_pacchetto_non_riconosciuto(pacchetto, pacchetto_da_spedire, array_socket, dim);
-    }
-}
-
 void processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     PGresult *utente_registrato;
 
@@ -319,4 +287,36 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
 
 char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     format_pacchetto_non_riconosciuto(PACCHETTONONCOMPRESO, pacchetto_da_spedire);
+}
+
+void processa(const char * const pacchetto, char *  pacchetto_da_spedire, int ** array_socket, int * dim) {
+    int comando;
+
+    comando = parse_comando(pacchetto);
+    pacchetto_da_spedire = alloca_pacchetto;
+
+    if (comando == LOGIN) {
+        processa_login(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else if (comando == SIGNIN) {
+        processa_signin(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else if (comando == CREAGRUP) {
+        processa_crea_gruppo(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else if (comando == SENDMESS) {
+        processa_messaggio(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else if (comando == SEARCHGRUP) {
+        processa_cerca_gruppo(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else if (comando == SENDNOTIFICA) {
+        processa_manda_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else if (comando == ACCETTAUT) {
+        processa_accetta_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
+    else {
+        processa_pacchetto_non_riconosciuto(pacchetto, pacchetto_da_spedire, array_socket, dim);
+    }
 }
