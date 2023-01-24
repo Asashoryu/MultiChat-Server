@@ -124,8 +124,9 @@ int main() {
 					char * pacchetto_da_spedire;
 					int * array;
 					int dim;
-					processa(buffer_read, pacchetto_da_spedire, &array, &dim);
+					processa(buffer_read, &pacchetto_da_spedire, &array, &dim);
 					printf("Ecco il pacchetto che sarebbe spedito:\n%s", pacchetto_da_spedire);
+					
 					// int j;
 					// for (j = 1; j <= max_socket; ++j) {
 					// 	if (FD_ISSET(j, &socket_aperte)) {

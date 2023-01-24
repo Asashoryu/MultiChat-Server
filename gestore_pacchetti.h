@@ -52,7 +52,7 @@ void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, ch
 
 char *alloca_comando();
 void alloca_login(char **nome, char **password);
-void alloca_sigin(char **nome, char **password);
+void alloca_signin(char **nome, char **password);
 void alloca_crea_gruppo(char **nome_gruppo, char **nome_utente);
 void alloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio);
 void alloca_cerca_gruppo(char **nome_gruppo, char **nome_utente);
@@ -60,7 +60,7 @@ void alloca_manda_notifica(char **nome_gruppo, char **nome_utente);
 void alloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente);
 
 void dealloca_login(char **nome, char **password);
-void dealloca_sigin(char **nome, char **password);
+void dealloca_signin(char **nome, char **password);
 void dealloca_crea_gruppo(char **nome_gruppo, char **nome_utente);
 void dealloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio);
 void dealloca_cerca_gruppo(char **nome_gruppo, char **nome_utente);
