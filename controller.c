@@ -25,7 +25,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
     parse_login(pacchetto, nome, password);
     printf(" 1");
     utente_registrato = check_se_utente_registrato(nome, password);
-    printf(" 2");
+    printf(" 2 %s", nome);
     //errore DB
     if (utente_registrato == NULL) {
         format_login_risposta(LOGINERR, pacchetto_da_spedire);
@@ -33,7 +33,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
     else {
         printf(" 3");
         // se non registrato 
-        if (PQntuples(utente_registrato) == 0) {
+        if (PQntuples(utente_registrato) == 1) {
             format_login_risposta(LOGINNONTROVATO, pacchetto_da_spedire);
         }
         // se registrato
@@ -122,6 +122,7 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
 
     char * nome;
     char * password;
+    alloca_signin(&nome, &password);
     parse_login(pacchetto, nome, password);
     utente_registrato = check_se_utente_registrato(nome, password);
     //errore DB
@@ -145,8 +146,9 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
             }
         }
     }
-
     PQclear(utente_registrato);
+
+    dealloca_signin(&nome, &password);
 }
 
 void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -155,6 +157,8 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
 
     char * nome_gruppo;
     char * nome_utente;
+
+    alloca_crea_gruppo(&nome_gruppo, &nome_utente);
 
     parse_crea_gruppo(pacchetto, nome_gruppo, nome_utente);
 
@@ -182,6 +186,7 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
     }
 
     PQclear(gruppo_registrato);
+    dealloca_crea_gruppo(&nome_gruppo, &nome_utente);
 }
 
 void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -193,6 +198,7 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     char * contenuto;
     char * minutaggio;
 
+    alloca_messaggio(&nome_gruppo, &nome_utente, &contenuto, &minutaggio);
     parse_messaggio(pacchetto, nome_gruppo, nome_utente, contenuto, minutaggio);
     inserito = insert_messaggio_db(nome_utente, nome_gruppo, contenuto, minutaggio);
     if (inserito == 0) {
@@ -209,13 +215,15 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     }
 
     PQclear(utenti_connessi);
+    dealloca_messaggio(&nome_gruppo, &nome_utente, &contenuto, &minutaggio);
 }
 
 char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     PGresult *gruppi_trovati;
     char * nome_utente;
     char * nome_gruppo;
-
+    
+    alloca_cerca_gruppo(&nome_gruppo, &nome_utente);
     parse_cerca_gruppo(pacchetto_da_spedire, nome_utente, nome_gruppo);
 
     gruppi_trovati = select_gruppi_senza_utente(nome_utente, nome_gruppo);
@@ -232,6 +240,7 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
     }
 
     PQclear(gruppi_trovati);
+    dealloca_cerca_gruppo(&nome_gruppo, &nome_utente);
 }
 
 char * processa_manda_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -239,6 +248,9 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
 
     char * nome_utente;
     char * nome_gruppo;
+
+    alloca_manda_notifica(&nome_gruppo, &nome_utente);
+
     parse_manda_notifica(pacchetto_da_spedire, nome_utente, nome_gruppo);
     
     inserito = insert_notifica_db(nome_utente, nome_gruppo);
@@ -251,6 +263,8 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
         format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
         format_add_fine_notifiche(pacchetto_da_spedire);
     }
+
+    dealloca_manda_notifica(&nome_gruppo, &nome_utente);
 }
 
 char *processa_accetta_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
@@ -261,6 +275,8 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
     char * nome_gruppo;
     char * nome_utente;
     char * nome_richiedente;
+
+    alloca_accetta_notifica(&nome_gruppo, &nome_utente, &nome_richiedente);
 
     parse_accetta_notifica(pacchetto, nome_utente, nome_gruppo, nome_richiedente);
 
@@ -297,42 +313,44 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
             PQclear(messaggi_gruppo);
         }
     }
+
+    dealloca_accetta_notifica(&nome_gruppo, &nome_utente, &nome_richiedente);
 }
 
 char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     format_pacchetto_non_riconosciuto(PACCHETTONONCOMPRESO, pacchetto_da_spedire);
 }
 
-void processa(const char * const pacchetto, char *  pacchetto_da_spedire, int ** array_socket, int * dim) {
+void processa(const char * const pacchetto, char **  pacchetto_da_spedire, int ** array_socket, int * dim) {
     int comando;
 
     comando = parse_comando(pacchetto);
-    pacchetto_da_spedire = alloca_pacchetto();
+    *pacchetto_da_spedire = alloca_pacchetto();
 
     if (comando == LOGIN) {
         printf("Debug: entrato in login");
-        processa_login(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_login(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == SIGNIN) {
-        processa_signin(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_signin(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == CREAGRUP) {
-        processa_crea_gruppo(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_crea_gruppo(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == SENDMESS) {
-        processa_messaggio(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_messaggio(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == SEARCHGRUP) {
-        processa_cerca_gruppo(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_cerca_gruppo(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == SENDNOTIFICA) {
-        processa_manda_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_manda_notifica(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == ACCETTAUT) {
-        processa_accetta_notifica(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_accetta_notifica(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else {
-        processa_pacchetto_non_riconosciuto(pacchetto, pacchetto_da_spedire, array_socket, dim);
+        processa_pacchetto_non_riconosciuto(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
 
 }

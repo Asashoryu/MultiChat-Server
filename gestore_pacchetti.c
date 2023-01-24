@@ -233,7 +233,7 @@ void alloca_login(char **nome, char **password)
     *password = malloc (LN_STR*sizeof(char));
 }
 
-void alloca_sigin(char **nome, char **password)
+void alloca_signin(char **nome, char **password)
 {
     *nome = malloc (LN_STR*sizeof(char));
     *password = malloc (LN_STR*sizeof(char));
@@ -281,7 +281,7 @@ void dealloca_login(char **nome, char **password)
     *password = NULL;
 }
 
-void dealloca_sigin(char **nome, char **password)
+void dealloca_signin(char **nome, char **password)
 {
     free(*nome);
     free(*password);
