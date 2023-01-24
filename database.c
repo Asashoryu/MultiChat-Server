@@ -416,7 +416,7 @@ PGresult *check_se_utente_registrato(const char* const nome, const char* const p
     }
     else
     {
-        printf("DB: Database non trovato, gruppo non caricato\n");
+        printf("DB: Database non trovato, utente non caricato\n");
     }
 
     disconnetti_db(miaconn);
@@ -477,6 +477,36 @@ PGresult *check_se_utente_amministratore(const char* const nome_utente, const ch
     else
     {
         printf("DB: Database non trovato, gruppi non caricati\n");
+    }
+
+    disconnetti_db(miaconn);
+    return utente_registrato_db;
+}
+
+PGresult *check_se_utente_connesso(const char * const nome_utente) {
+    PGconn *miaconn   = NULL;
+    PGresult *utente_registrato_db = NULL;
+    char comandoSQL[2000];
+    char errore[1000];
+
+    miaconn = connetti_db(CONNSTRINGA);
+
+    if(miaconn != NULL)
+    {
+        sprintf(comandoSQL,"select * from utente WHERE nome = '%s'", nome_utente);
+        utente_registrato_db = PQexec(miaconn, comandoSQL);
+        strcpy(errore, PQresultErrorMessage(utente_registrato_db));
+        if(strlen(errore) > 0)
+        {
+            printf("%s\n",errore);
+            printf("DB: errore nel comando select, utente non trovato\n");
+            PQclear(utente_registrato_db);
+            utente_registrato_db = NULL;
+        }
+    }
+    else
+    {
+        printf("DB: Database non trovato, utente non caricato\n");
     }
 
     disconnetti_db(miaconn);

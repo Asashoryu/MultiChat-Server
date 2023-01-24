@@ -222,7 +222,6 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
         format_add_contenuto_messaggio(pacchetto_da_spedire, contenuto);
         format_add_minutaggio_messaggio(pacchetto_da_spedire, minutaggio);
         format_add_fine_messaggi(pacchetto_da_spedire);
-
     }
 }
 
@@ -230,6 +229,7 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
     char * nome_gruppo;
     char * nome_utente;
     parse_accetta_notifica(pacchetto, nome_utente, nome_gruppo);
+    
 }
 
 char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
