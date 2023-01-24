@@ -333,8 +333,10 @@ void dealloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **no
 {
     free(*nome_gruppo);
     free(*nome_utente);
+    free(*nome_rihiedente);
     *nome_gruppo = NULL;
     *nome_utente = NULL;
+    *nome_rihiedente = NULL;
 }
 
 ////// formatting ///////
