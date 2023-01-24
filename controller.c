@@ -25,7 +25,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
     parse_login(pacchetto, nome, password);
     printf(" 1");
     utente_registrato = check_se_utente_registrato(nome, password);
-    printf(" 2 %s", nome);
+    printf(" 2 %s ", nome);
     //errore DB
     if (utente_registrato == NULL) {
         format_login_risposta(LOGINERR, pacchetto_da_spedire);
@@ -62,7 +62,9 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             printf(" 9");
             // aggiungi i gruppi
             for (int i = 0; i < num_gruppi_utente; i++) {
-                strcpy(nome_gruppo, PQgetvalue(gruppi_utente, i, 0));
+                format_add_inizio_gruppo(pacchetto_da_spedire);
+
+                strcpy(nome_gruppo, PQgetvalue(gruppi_utente, i, 1));
                 printf(" 10");
 
                 format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
@@ -77,9 +79,11 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
                 printf(" 14");
                 // aggiungi i messaggi
                 for (int j = 0; j < num_messaggi_gruppo; j++) {
+                    format_add_inizio_messaggio(pacchetto_da_spedire);
                     format_add_mittente_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 1));
                     format_add_contenuto_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 3));
                     format_add_minutaggio_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppi_utente, j, 4));
+                    format_add_fine_messaggio(pacchetto_da_spedire);
                 }
                 printf(" 15");
 
@@ -88,22 +92,28 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
                 format_add_fine_messaggi(pacchetto_da_spedire);
                 printf(" 16");
 
-                notifiche_gruppi_utente = select_notifiche_gruppo_utente(nome_gruppo);
-                printf(" 17");
-                num_notifiche_gruppo = PQntuples(notifiche_gruppi_utente);
-
                 format_add_inizio_notifiche(pacchetto_da_spedire);
-                printf(" 18");
-                // aggiunti le notifiche
-                for (int k = 0; k < num_messaggi_gruppo; k++) {
-                    format_add_notificante(pacchetto_da_spedire, PQgetvalue(notifiche_gruppi_utente, k, 0));
-                    format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
+                // aggiunti le notifiche se amministratore
+                if (strcmp(nome, PQgetvalue(gruppi_utente, i, 0)) == 0) {
+                    notifiche_gruppi_utente = select_notifiche_gruppo_utente(nome_gruppo);
+                    printf(" 17");
+                    num_notifiche_gruppo = PQntuples(notifiche_gruppi_utente);
+
+                    printf(" 18");
+                    for (int k = 0; k < num_notifiche_gruppo; k++) {
+                        format_add_inizio_notifica(pacchetto_da_spedire);
+                        format_add_notificante(pacchetto_da_spedire, PQgetvalue(notifiche_gruppi_utente, k, 0));
+                        format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
+                        format_add_fine_notifica(pacchetto_da_spedire);
+                    }
+
+                    PQclear(notifiche_gruppi_utente);
+                    printf(" 19");
                 }
 
-                PQclear(notifiche_gruppi_utente);
-                printf(" 19");
-
                 format_add_fine_notifiche(pacchetto_da_spedire);
+
+                format_add_fine_gruppo(pacchetto_da_spedire);
 
             }
             PQclear(gruppi_utente);

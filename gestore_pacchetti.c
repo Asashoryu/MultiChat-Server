@@ -47,6 +47,7 @@ void parse_login(const char * const pacchetto, char * nome, char * password)
      {
         dim = fine-inizio;
         strncpy (nome,inizio,dim);
+        nome[dim] = '\0';
      }
 
      inizio = strstr (comando,"password=");
@@ -56,6 +57,7 @@ void parse_login(const char * const pacchetto, char * nome, char * password)
      {
         dim = fine-inizio;
         strncpy (password,inizio,dim);
+        password[dim] = '\0';
      }
 }
 
@@ -74,6 +76,7 @@ void parse_signin(const char * const pacchetto, char * nome, char * password)
      {
         dim = fine-inizio;
         strncpy (nome,inizio,dim);
+        nome[dim] = '\0';
      }
 
      inizio = strstr (comando,"password=");
@@ -83,6 +86,7 @@ void parse_signin(const char * const pacchetto, char * nome, char * password)
      {
         dim = fine-inizio;
         strncpy (password,inizio,dim);
+        password[dim] = '\0';
      }
 }
 
@@ -101,6 +105,7 @@ void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * 
     {
         dim = fine-inizio;
         strncpy (nome_gruppo,inizio,dim);
+        nome_gruppo[dim] = '\0';
     }
 
     inizio = strstr (comando,"utente=");
@@ -110,6 +115,7 @@ void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * 
     {
         dim = fine-inizio;
         strncpy (nome_utente,inizio,dim);
+        nome_utente[dim] = '\0';
     }
 }
 
@@ -128,6 +134,7 @@ void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * no
     {
         dim = fine-inizio;
         strncpy (nome_gruppo,inizio,dim);
+        nome_gruppo[dim] = '\0';
     }
 
     inizio = strstr (comando,"utente=");
@@ -137,6 +144,7 @@ void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * no
     {
         dim = fine-inizio;
         strncpy (nome_utente,inizio,dim);
+        nome_utente[dim] = '\0';
     }
 
     inizio = strstr (comando,"messaggio=");
@@ -146,6 +154,7 @@ void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * no
     {
         dim = fine-inizio;
         strncpy (messaggio,inizio,dim);
+        messaggio[dim] = '\0';
     }
 
     inizio = strstr (comando,"minutaggio=");
@@ -155,6 +164,7 @@ void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * no
     {
         dim = fine-inizio;
         strncpy (minutaggio,inizio,dim);
+        minutaggio[dim] = '\0';
     }
 }
 
@@ -173,6 +183,7 @@ void parse_cerca_gruppo(const char * const pacchetto, char * nome_gruppo, char *
     {
         dim = fine-inizio;
         strncpy (nome_gruppo,inizio,dim);
+        nome_gruppo[dim] = '\0';
     }
 
     inizio = strstr (comando,"utente=");
@@ -182,6 +193,7 @@ void parse_cerca_gruppo(const char * const pacchetto, char * nome_gruppo, char *
     {
         dim = fine-inizio;
         strncpy (nome_utente,inizio,dim);
+        nome_utente[dim] = '\0';
     }
 }
 
@@ -200,6 +212,7 @@ void parse_manda_notifica(const char * const pacchetto, char * nome_gruppo, char
     {
         dim = fine-inizio;
         strncpy (nome_gruppo,inizio,dim);
+        nome_gruppo[dim] = '\0';
     }
 
     inizio = strstr (comando,"utente=");
@@ -209,6 +222,7 @@ void parse_manda_notifica(const char * const pacchetto, char * nome_gruppo, char
     {
         dim = fine-inizio;
         strncpy (nome_utente,inizio,dim);
+        nome_utente[dim] = '\0';
     }
 }
 
@@ -227,6 +241,7 @@ void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, ch
     {
         dim = fine-inizio;
         strncpy (nome_gruppo,inizio,dim);
+        nome_gruppo[dim] = '\0';
     }
 
     inizio = strstr (comando,"utente=");
@@ -236,6 +251,7 @@ void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, ch
     {
         dim = fine-inizio;
         strncpy (nome_utente,inizio,dim);
+        nome_utente[dim] = '\0';
     }
 
     strcpy (comando,pacchetto);
@@ -246,6 +262,7 @@ void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, ch
     {
         dim = fine-inizio;
         strncpy (nome_richiedente,inizio,dim);
+        nome_richiedente[dim] = '\0';
     }
 }
 
@@ -450,6 +467,13 @@ void format_add_fine_gruppi(char * pacchetto_da_spedire) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</gruppi>\r\n");
 }
 
+void format_add_inizio_gruppo(char * pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "<gruppo>\r\n");
+}
+void format_add_fine_gruppo(char * pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</gruppo>\r\n");
+}
+
 void format_add_inizio_messaggi(char * pacchetto_da_spedire) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "<messaggi>\r\n");
 }
@@ -458,12 +482,28 @@ void format_add_fine_messaggi(char * pacchetto_da_spedire) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</messaggi>\r\n");
 }
 
+void format_add_inizio_messaggio(char * pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "<messaggio>\r\n");
+}
+
+void format_add_fine_messaggio(char * pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</messaggio>\r\n");
+}
+
 void format_add_inizio_notifiche(char * pacchetto_da_spedire) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "<notifiche>\r\n");
 }
 
 void format_add_fine_notifiche(char * pacchetto_da_spedire) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</notifiche>\r\n");
+}
+
+void format_add_inizio_notifica(char * pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "<notifica>\r\n");
+}
+
+void format_add_fine_notifica(char * pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</notifica>\r\n");
 }
 
 void format_add_nome_gruppo(char * pacchetto_da_spedire, const char * const nome_gruppo) {
