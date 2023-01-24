@@ -59,6 +59,33 @@ void parse_login(const char * const pacchetto, char * nome, char * password)
      }
 }
 
+void parse_signin(const char * const pacchetto, char * nome, char * password)
+{
+    char *inizio = NULL;
+    char *fine = NULL;
+    int dim = 0;
+    char comando[200];
+
+     strcpy (comando,pacchetto);
+     inizio = strstr (comando,"nome=");
+     inizio += strlen ("nome=");
+     fine = strstr (inizio,"\r\n");
+     if (inizio && fine)
+     {
+        dim = fine-inizio;
+        strncpy (nome,inizio,dim);
+     }
+
+     inizio = strstr (comando,"password=");
+     inizio += strlen ("password=");
+     fine = strstr (inizio,"\r\n");
+     if (inizio && fine)
+     {
+        dim = fine-inizio;
+        strncpy (password,inizio,dim);
+     }
+}
+
 void parse_crea_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente)
 {
     char *inizio;
