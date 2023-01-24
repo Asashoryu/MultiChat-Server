@@ -5,6 +5,6 @@
 
 #define PACCHETT0_LEN 10000
 
-void processa(const char * const pacchetto, const * pacchetto_da_spedire, int ** array_socket, int * dim);
+void processa(const char * const pacchetto, char * pacchetto_da_spedire, int ** array_socket, int * dim);
 
 #endif

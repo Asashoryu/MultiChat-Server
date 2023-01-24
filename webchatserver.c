@@ -1,3 +1,4 @@
+//gcc -o wbc webchatserver.c controller.c gestore_pacchetti.c database.c -I/usr/include/postgresql -L/usr/lib/postgresql/15/lib -lpq
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -12,6 +13,8 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <errno.h>
+
+#include "controller.h"
 
 #define DIMBUFF 256
 #define PORTA "10000"
@@ -39,7 +42,7 @@ int main() {
 
 	// creazione socket
 	socket_ascolta = socket(indirizzo_bind->ai_family, indirizzo_bind->ai_socktype, indirizzo_bind->ai_protocol);
-	if (socket_ascolta < 0) { 
+	if (socket_ascolta < 0) {
 			perror("Errore nella creazione della server socket");
 			exit(-1);
 	}
@@ -48,7 +51,7 @@ int main() {
 	}
 
 	//bind
-	if (bind(socket_ascolta, indirizzo_bind->ai_addr, indirizzo_bind->ai_addrlen) != 0) { 
+	if (bind(socket_ascolta, indirizzo_bind->ai_addr, indirizzo_bind->ai_addrlen) != 0) {
 			perror("Errore nel bind della server socket");
 			exit(-1);
 	}
@@ -114,25 +117,32 @@ int main() {
 					if (byte_ricevuti < 1) {
 						FD_CLR(i, &socket_aperte);
 						close(i);
+						printf("Server: una connessione e stata chiusa\n");
 						continue;
 					}
-					int j;
-					for (j = 1; j <= max_socket; ++j) {
-						if (FD_ISSET(j, &socket_aperte)) {
-							if (j == socket_ascolta || j == i) {
-								continue;
-							}
-							else {
-								send(j, buffer_read, byte_ricevuti, 0);
-							}
-						}
-					}
+
+					char * pacchetto_da_spedire;
+					int * array;
+					int dim;
+					processa(buffer_read, pacchetto_da_spedire, &array, &dim);
+					printf("Ecco il pacchetto che sarebbe spedito:\n%s", pacchetto_da_spedire);
+					// int j;
+					// for (j = 1; j <= max_socket; ++j) {
+					// 	if (FD_ISSET(j, &socket_aperte)) {
+					// 		if (j == socket_ascolta || j == i) {
+					// 			continue;
+					// 		}
+					// 		else {
+					// 			send(j, buffer_read, byte_ricevuti, 0);
+					// 		}
+					// 	}
+					// }
 				}
 			}
 		}
 
 		/*socket_client = accept(socket_ascolta, (struct sockaddr *) &indirizzo_client, &indirizzo_client_len);
-		if (socket_client < 0) { 
+		if (socket_client < 0) {
 			perror("Errore nella creazione della client socket");
 			exit(-1);
 		}
@@ -142,14 +152,14 @@ int main() {
 		printf("socket_connessione = %d\n", socket_client);
 		// recv
 		printf("Si procede con la fork\n");
-	
+
 		child_pid = fork();
 		// processo figlio
 		if (child_pid == 0) {
 				int byte_letti;
 				byte_letti = recv(socket_client, buffer, DIMBUFF, 0);
 				printf("%d caratteri letti dal server\n", byte_letti);
-				buffer[byte_letti] = '\0';	
+				buffer[byte_letti] = '\0';
 				printf("Server: il messaggio ricevuto: %s\n", buffer);
 
 				char *inizio;
@@ -172,7 +182,7 @@ int main() {
 				else {
 					printf("Errore: inizio e' NULL\n");
 				}
-				
+
 				inizio = strstr(buffer, "nome=");
 				inizio += strlen("nome=");
 				fine = strstr(inizio, "\r\n");
@@ -190,7 +200,7 @@ int main() {
 
 				inizio = strstr(buffer, "password=");
 				inizio += strlen("password=");
-				fine = strstr(inizio, "\r\n");		
+				fine = strstr(inizio, "\r\n");
 				if (inizio && fine) {
 					dimensione = fine-inizio;
 					printf("dimensione %d\n", dimensione);
