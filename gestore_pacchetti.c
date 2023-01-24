@@ -297,7 +297,7 @@ void dealloca_crea_gruppo (char **nome_gruppo, char **nome_utente)
     *nome_utente = NULL;
 }
 
-void dealloca_messaggio_e_minutaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio)
+void dealloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio)
 {
     free (nome_gruppo);
     free (nome_utente);
