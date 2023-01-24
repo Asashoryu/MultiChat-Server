@@ -129,7 +129,7 @@ int insert_gruppo_db(const char * const nome, const char * const amministratore)
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into gruppo(nome, amministratore_id) values ('%s', '%s')", nome, amministratore);
+        sprintf(comandoSQL,"Insert into gruppo(nome, amministratore) values ('%s', '%s')", nome, amministratore);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
