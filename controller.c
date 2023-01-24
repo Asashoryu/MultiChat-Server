@@ -16,13 +16,11 @@ void dealloca_pacchetto(char * pacchetto) {
     free(pacchetto);
 }
 
-char *processa(const char * const pacchetto, int ** array_socket, int * dim) {
-    char * pacchetto_da_spedire;
+void processa(const char * const pacchetto, const * pacchetto_da_spedire, int ** array_socket, int * dim) {
     int comando;
 
     comando = parse_comando(pacchetto);
     pacchetto_da_spedire = alloca_pacchetto;
-
 
     if (comando == LOGIN) {
         processa_login(pacchetto, pacchetto_da_spedire, array_socket, dim);
@@ -44,7 +42,7 @@ char *processa(const char * const pacchetto, int ** array_socket, int * dim) {
     }
 }
 
-processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+void processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     PGresult *utente_registrato;
 
     char * nome;
@@ -133,12 +131,12 @@ processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, 
         }
     }
 
-    PQclear(utente_registrato);
+    PQclear(utente_registrato); 
 
     return pacchetto_da_spedire;
 }
 
-processa_signin(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+void processa_signin(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     PGresult *utente_registrato;
     int inserito = 0;
 
@@ -169,7 +167,7 @@ processa_signin(const char * const pacchetto, char * const pacchetto_da_spedire,
     }
 }
 
-char *processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     PGresult *gruppo_registrato = 0;
     int inserito = 0;
 
@@ -202,7 +200,7 @@ char *processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_
     }
 }
 
-char *processa_messaggio(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
     PGresult * utenti_connessi;
     int inserito = 0;
 
