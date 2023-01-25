@@ -36,7 +36,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
     else {
         printf(" 3");
         // se non registrato 
-        if (PQntuples(utente_registrato) == 1) {
+        if (PQntuples(utente_registrato) == 0) {
             format_login_risposta(LOGINNONTROVATO, pacchetto_da_spedire);
         }
         // se registrato
