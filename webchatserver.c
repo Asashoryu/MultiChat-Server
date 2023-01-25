@@ -126,6 +126,7 @@ int main() {
 					int dim;
 					processa(buffer_read, &pacchetto_da_spedire, &array, &dim);
 					printf("\nEcco il pacchetto che sarebbe spedito di dimensione %ld:\n%s", strlen(pacchetto_da_spedire), pacchetto_da_spedire);
+					send(i, pacchetto_da_spedire, strlen(pacchetto_da_spedire), 0);
 					dealloca_pacchetto(pacchetto_da_spedire);
 					
 					// int j;

@@ -383,79 +383,115 @@ void dealloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **no
 
 void format_login_risposta(const int comando, char * const pacchetto_da_spedire) {
     if (comando == LOGINOK) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Utente loggato con successo\r\n", LOGINOK);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Utente loggato con successo\r\n", LOGINOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == LOGINERR) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Errore nel login: non è stato possibile accedere al Database\r\n", LOGINERR);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nel login: non è stato possibile accedere al Database\r\n", LOGINERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == LOGINNONTROVATO) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Utente non trovato\r\n", LOGINNONTROVATO);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Utente non trovato\r\n", LOGINNONTROVATO);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
 void format_signin_risposta(const int comando, char * const pacchetto_da_spedire) {
     if (comando == SIGNINOK) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Utente registrato con successo\r\n", LOGINOK);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Utente registrato con successo\r\n", LOGINOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == SIGNINERR) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Errore nel sign in: non è stato possibile accedere al Database\r\n", LOGINERR);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nel sign in: non è stato possibile accedere al Database\r\n", LOGINERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == SIGNGIAREGISTRATO) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Utente già registrato\r\n", SIGNGIAREGISTRATO);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Utente già registrato\r\n", SIGNGIAREGISTRATO);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
 void format_crea_gruppo_risposta(const int comando, char * const pacchetto_da_spedire) {
     if (comando == CREAGRUPOK) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Gruppo creato con successo\r\n", LOGINOK);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Gruppo creato con successo\r\n", LOGINOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == CREAGRUPERR) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Errore nella creazione del gruppo: non è stato possibile accedere al Database\r\n", LOGINERR);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nella creazione del gruppo: non è stato possibile accedere al Database\r\n", LOGINERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == CREAGRUPGIAREGISTRATO) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Il gruppo esiste già\r\n", SIGNGIAREGISTRATO);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Il gruppo esiste già\r\n", SIGNGIAREGISTRATO);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
 void format_messaggio_risposta(const int comando, char * const pacchetto_da_spedire) {
     if (comando == SENDMESSOK) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Messaggio ricevuto\r\n", SENDMESSOK);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Messaggio ricevuto\r\n", SENDMESSOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == SENDMESSERR) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Errore nel send del messaggio: non è stato possibile accedere al Database\r\n", SENDMESSERR);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nel send del messaggio: non è stato possibile accedere al Database\r\n", SENDMESSERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
 void format_cerca_gruppo(const int comando, char * const pacchetto_da_spedire) {
     if (comando == SEARCHGRUPOK) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Ricerca gruppi completata\r\n", SEARCHGRUPOK);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Ricerca gruppi completata\r\n", SEARCHGRUPOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == SEARCHGRUPERR) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Errore nella ricerca dei gruppi: non è stato possibile accedere al Database\r\n", SEARCHGRUPERR);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nella ricerca dei gruppi: non è stato possibile accedere al Database\r\n", SEARCHGRUPERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
 void format_manda_notifica(const int comando, char * const pacchetto_da_spedire) {
     if (comando == SENDNOTIFICAOK) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Notifica mandata con successo\r\n", SENDNOTIFICAOK);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Notifica mandata con successo\r\n", SENDNOTIFICAOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == SEARCHGRUPERR) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Errore nell'invio della notifica: non è stato possibile accedere al Database\r\n", SEARCHGRUPERR);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nell'invio della notifica: non è stato possibile accedere al Database\r\n", SEARCHGRUPERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
 void format_accetta_notifica(const int comando, char * const pacchetto_da_spedire) {
     if (comando == ACCETTAUTOK) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Notifica accettata con successo\r\n", ACCETTAUTOK);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Notifica accettata con successo\r\n", ACCETTAUTOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == ACCETTAUTERR) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Errore nell'accettazione della notifica: non è stato possibile accedere al Database\r\n", ACCETTAUTERR);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nell'accettazione della notifica: non è stato possibile accedere al Database\r\n", ACCETTAUTERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
 void format_pacchetto_non_riconosciuto(const int comando, char * const pacchetto_da_spedire) {
     if (comando == PACCHETTONONCOMPRESO) {
-        sprintf(pacchetto_da_spedire, "cmd=%d\r\nmessaggio=Pacchetto non compreso, provare a ripetere l'azione\r\n", PACCHETTONONCOMPRESO);
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Pacchetto non compreso, provare a ripetere l'azione\r\n", PACCHETTONONCOMPRESO);
+        format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
 
@@ -506,21 +542,42 @@ void format_add_fine_notifica(char * pacchetto_da_spedire) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</notifica>\r\n");
 }
 
+void format_add_inizio_pacchetto(char* pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire, "\r\n<pacchetto>\r\n");
+}
+
+void format_add_fine_pacchetto(char* pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</pacchetto>\r\n");
+}
+
+void format_add_inizio_intestazione(char* pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "<head>\r\n");
+}
+
+void format_add_fine_intestazione(char* pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</head>\r\n");
+}
+
 void format_add_nome_gruppo(char * pacchetto_da_spedire, const char * const nome_gruppo) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "nome_gruppo=%s\r\n", nome_gruppo);
 }
+
 void format_add_mittente_messaggio(char * pacchetto_da_spedire, const char * const nome_mittente_messaggio) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "mittente=%s\r\n", nome_mittente_messaggio);
 }
+
 void format_add_contenuto_messaggio(char * pacchetto_da_spedire, const char * const contenuto_messaggio) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "contenuto=%s\r\n", contenuto_messaggio);
 }
+
 void format_add_minutaggio_messaggio(char * pacchetto_da_spedire, const char * const minutaggio_messaggio) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "minutaggio=%s\r\n", minutaggio_messaggio);
 }
+
 void format_add_notificante(char * pacchetto_da_spedire, const char * const nome_notificante) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "notificante=%s\r\n", nome_notificante);
 }
+
 void format_add_gruppo_notificato(char * pacchetto_da_spedire, const char * const gruppo_notificato) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "gruppo_notificato=%s\r\n", gruppo_notificato);
 }

@@ -21,6 +21,9 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
 
     char * nome;
     char * password;
+
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
+
     alloca_login(&nome, &password);
     parse_login(pacchetto, nome, password);
     printf(" 1");
@@ -122,6 +125,8 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
         }
     }
 
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
     PQclear(utente_registrato); 
     dealloca_login(&nome, &password);
 }
@@ -132,6 +137,9 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
 
     char * nome;
     char * password;
+
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
+
     alloca_signin(&nome, &password);
     parse_signin(pacchetto, nome, password);
 
@@ -158,6 +166,9 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
             }
         }
     }
+
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
     PQclear(utente_registrato);
 
     dealloca_signin(&nome, &password);
@@ -169,6 +180,8 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
 
     char * nome_gruppo;
     char * nome_utente;
+
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
 
     alloca_crea_gruppo(&nome_gruppo, &nome_utente);
 
@@ -197,6 +210,9 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
         }
     }
 
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
+
     PQclear(gruppo_registrato);
     dealloca_crea_gruppo(&nome_gruppo, &nome_utente);
 }
@@ -209,6 +225,8 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     char * nome_utente;
     char * contenuto;
     char * minutaggio;
+
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
 
     alloca_messaggio(&nome_gruppo, &nome_utente, &contenuto, &minutaggio);
     parse_messaggio(pacchetto, nome_gruppo, nome_utente, contenuto, minutaggio);
@@ -226,6 +244,8 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
         format_add_fine_messaggi(pacchetto_da_spedire);
     }
 
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
     PQclear(utenti_connessi);
     dealloca_messaggio(&nome_gruppo, &nome_utente, &contenuto, &minutaggio);
 }
@@ -234,6 +254,8 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
     PGresult *gruppi_trovati;
     char * nome_utente;
     char * nome_gruppo;
+
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
     
     alloca_cerca_gruppo(&nome_gruppo, &nome_utente);
     parse_cerca_gruppo(pacchetto_da_spedire, nome_utente, nome_gruppo);
@@ -251,6 +273,8 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
         format_add_fine_gruppi(pacchetto_da_spedire);
     }
 
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
     PQclear(gruppi_trovati);
     dealloca_cerca_gruppo(&nome_gruppo, &nome_utente);
 }
@@ -260,6 +284,8 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
 
     char * nome_utente;
     char * nome_gruppo;
+
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
 
     alloca_manda_notifica(&nome_gruppo, &nome_utente);
 
@@ -276,6 +302,8 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
         format_add_fine_notifiche(pacchetto_da_spedire);
     }
 
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
     dealloca_manda_notifica(&nome_gruppo, &nome_utente);
 }
 
@@ -287,6 +315,8 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
     char * nome_gruppo;
     char * nome_utente;
     char * nome_richiedente;
+
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
 
     alloca_accetta_notifica(&nome_gruppo, &nome_utente, &nome_richiedente);
 
@@ -326,11 +356,15 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
         }
     }
 
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
     dealloca_accetta_notifica(&nome_gruppo, &nome_utente, &nome_richiedente);
 }
 
 char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim) {
+    format_add_inizio_pacchetto(pacchetto_da_spedire);
     format_pacchetto_non_riconosciuto(PACCHETTONONCOMPRESO, pacchetto_da_spedire);
+    format_add_fine_pacchetto(pacchetto_da_spedire);
 }
 
 void processa(const char * const pacchetto, char **  pacchetto_da_spedire, int ** array_socket, int * dim) {
