@@ -78,10 +78,19 @@ void format_pacchetto_non_riconosciuto(const int comando, char * const pacchetto
 
 void format_add_inizio_gruppi(char * pacchetto_da_spedire);
 void format_add_fine_gruppi(char * pacchetto_da_spedire);
+void format_add_inizio_gruppo(char * pacchetto_da_spedire);
+void format_add_fine_gruppo(char * pacchetto_da_spedire);
+
 void format_add_inizio_messaggi(char * pacchetto_da_spedire);
 void format_add_fine_messaggi(char * pacchetto_da_spedire);
+void format_add_inizio_messaggio(char * pacchetto_da_spedire);
+void format_add_fine_messaggio(char * pacchetto_da_spedire);
+
 void format_add_inizio_notifiche(char * pacchetto_da_spedire);
 void format_add_fine_notifiche(char * pacchetto_da_spedire);
+void format_add_inizio_notifica(char * pacchetto_da_spedire);
+void format_add_fine_notifica(char * pacchetto_da_spedire);
+
 
 void format_add_nome_gruppo(char * pacchetto_da_spedire, const char * const nome_gruppo);
 void format_add_mittente_messaggio(char * pacchetto_da_spedire, const char * const nome_mittente_messaggio);
