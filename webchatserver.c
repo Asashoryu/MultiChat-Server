@@ -125,7 +125,8 @@ int main() {
 					int * array;
 					int dim;
 					processa(buffer_read, &pacchetto_da_spedire, &array, &dim);
-					printf("Ecco il pacchetto che sarebbe spedito:\n%s", pacchetto_da_spedire);
+					printf("\nEcco il pacchetto che sarebbe spedito di dimensione %ld:\n%s", strlen(pacchetto_da_spedire), pacchetto_da_spedire);
+					dealloca_pacchetto(pacchetto_da_spedire);
 					
 					// int j;
 					// for (j = 1; j <= max_socket; ++j) {

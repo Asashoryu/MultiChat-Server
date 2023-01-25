@@ -464,7 +464,7 @@ PGresult *check_se_gruppo_registrato(const char* const nome) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from utente WHERE nome = '%s'", nome);
+        sprintf(comandoSQL,"select * from gruppo WHERE nome = '%s'", nome);
         utente_registrato_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(utente_registrato_db));
         if(strlen(errore) > 0)
