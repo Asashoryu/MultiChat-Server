@@ -34,16 +34,31 @@ void set_manda_indietro(int ** array, int * dim, int socket_fd) {
 void set_manda_notifica(int ** array, int * dim, int socket_richiedente, const char * const nome_gruppo) {
     *dim = 2;
     alloca_array(array, dim);
-    array[0] = socket_fd1;
-    array[1] = socket_fd2;
 }
 
 void set_accetta_notifica(int ** array, int * dim, int socket_accettante, const char * const nome_richiedente) {
-
+    PGresult * richiedente;
+    *dim = 2;
+    alloca_array(array, dim);
+    richiedente = check_se_utente_registrato()
 }
 
-void set_manda_messaggio(int ** array, int * dim, int socket_accettante, const char * const nome_gruppo) {
-
+void set_manda_messaggio(int ** array, int * dim, int socket_fd, const char * const nome_utente, const char * const nome_gruppo) {
+    PGresult * socket_gruppo;
+    int num_risultati;
+    socket_gruppo = select_socket_gruppo(nome_gruppo, nome_utente);
+    if (socket_gruppo == NULL) {
+        set_manda_indietro(array, dim, socket_fd);
+    }
+    else {
+        num_risultati = PQntuples(socket_gruppo);
+        *dim = num_risultati + 1;
+        alloca_array(array, dim);
+        for (int i = 0; i < num_risultati; i++) {
+            array[i] = PQgetvalue(socket_gruppo, i, 2);
+        }
+        array[num_risultati] = socket_fd;
+    }
 }
 
 void processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
