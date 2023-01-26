@@ -15,10 +15,12 @@
 int main ()
 {
     int flag;
+    int socket;
+    void *ns = NULL;
     char pk[200];
     char *nome;
     char amministratore[200];
-    char *password;
+    char password[200];
     char user[200];
     char gruppo[200];
     char mess[200];
@@ -34,15 +36,17 @@ int main ()
     strcpy (gruppo,"Mondo");
     strcpy (user,"Trincalex");
     strcpy (mess,"Welaaaaa");
+    strcpy (password,"pass15");
+    socket = 10;
 
-    // flag = insert_notifica_db (user,gruppo);
-    // if (flag == 1)
-    //     printf ("OK\n");
-    risultato = select_socket_amministratore (gruppo);
-    num = PQntuples (risultato);
-    for (i=0;i<num;i++)
-    {
-        printf ("%s %s %s\n",PQgetvalue(risultato,i,0),PQgetvalue(risultato,i,1),PQgetvalue(risultato,i,2));
-    }
+    flag = annulla_connessione_utente (user);
+    if (flag == 1)
+        printf ("OK\n");
+    // risultato = select_socket_amministratore (gruppo);
+    // num = PQntuples (risultato);
+    // for (i=0;i<num;i++)
+    // {
+    //     printf ("%s %s %s\n",PQgetvalue(risultato,i,0),PQgetvalue(risultato,i,1),PQgetvalue(risultato,i,2));
+    // }
     return 0;
 }
