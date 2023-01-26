@@ -27,8 +27,8 @@ void dealloca_array(int ** array) {
 
 void set_manda_indietro(int ** array, int * dim, int socket_fd) {
     *dim = 1;
-    alloca_array(array, dim);
-    array[0] = socket_fd;
+    alloca_array(array, *dim);
+    *array[0] = socket_fd;
 }
 
 void set_manda_notifica(int ** array, int * dim, int socket_richiedente, const char * const nome_gruppo) {
@@ -39,23 +39,23 @@ void set_manda_notifica(int ** array, int * dim, int socket_richiedente, const c
         set_manda_indietro(array, dim, socket_richiedente);
     }
     else {
-        alloca_array(array, dim);
-        array[0] = PQgetvalue(accettante, 0, 2);
-        array[1] = socket_richiedente;
+        alloca_array(array, *dim);
+        *array[0] = atoi(PQgetvalue(accettante, 0, 2));
+        *array[1] = socket_richiedente;
     }
 }
 
 void set_accetta_notifica(int ** array, int * dim, int socket_accettante, const char * const nome_richiedente) {
     PGresult * richiedente;
     *dim = 2;
-    richiedente = check_se_utente(nome_richiedente);
+    richiedente = check_se_utente_connesso(nome_richiedente);
     if (richiedente == NULL || PQntuples(richiedente) == 0) {
         set_manda_indietro(array, dim, socket_accettante);
     }
     else {
-        alloca_array(array, dim);
-        array[0] = PQgetvalue(richiedente, 0, 2);
-        array[1] = socket_accettante;
+        alloca_array(array, *dim);
+        *array[0] = atoi(PQgetvalue(richiedente, 0, 2));
+        *array[1] = socket_accettante;
     }
 }
 
@@ -69,11 +69,11 @@ void set_manda_messaggio(int ** array, int * dim, int socket_fd, const char * co
     else {
         num_risultati = PQntuples(socket_gruppo);
         *dim = num_risultati + 1;
-        alloca_array(array, dim);
+        alloca_array(array, *dim);
         for (int i = 0; i < num_risultati; i++) {
-            array[i] = PQgetvalue(socket_gruppo, i, 2);
+            *array[i] = atoi(PQgetvalue(socket_gruppo, i, 2));
         }
-        array[num_risultati] = socket_fd;
+        *array[num_risultati] = socket_fd;
     }
 }
 
@@ -121,6 +121,8 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             set_manda_indietro(array_socket, dim, socket_fd);
             format_add_inizio_body(pacchetto_da_spedire);
             printf(" 6");
+            update_stato_connessione_utente(nome, socket_fd);
+
             gruppi_utente = select_gruppi_utente(nome);
             printf(" 7");
             num_gruppi_utente = PQntuples(gruppi_utente);
@@ -182,7 +184,6 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
                 format_add_fine_notifiche(pacchetto_da_spedire);
 
                 format_add_fine_gruppo(pacchetto_da_spedire);
-
             }
             PQclear(gruppi_utente);
 
@@ -231,6 +232,7 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
                 set_manda_indietro(array_socket, dim, socket_fd);
             }
             else {
+                update_stato_connessione_utente(nome, socket_fd);
                 format_signin_risposta(SIGNINOK, pacchetto_da_spedire);
                 set_manda_indietro(array_socket, dim, socket_fd);
                 format_add_inizio_body(pacchetto_da_spedire);
