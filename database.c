@@ -244,6 +244,36 @@ PGresult *select_socket_gruppo (const char * const nome_gruppo, const char * con
     return socket_db;
 }
 
+PGresult *select_utente (const char * const nome_utente)
+{
+    PGconn *miaconn   = NULL;
+    PGresult *user_db = NULL;
+    char comandoSQL[2000];
+    char errore[1000];
+
+    miaconn = connetti_db(CONNSTRINGA);
+
+    if (miaconn != NULL)
+    {
+        sprintf(comandoSQL,"select * from utente where nome = '%s'",nome_utente);
+        user_db = PQexec(miaconn,comandoSQL);
+        strcpy(errore, PQresultErrorMessage(user_db));
+        if(strlen(errore) > 0)
+        {
+            printf("%s\n",errore);
+            printf("DB: errore nel comando select, gruppi non trovati\n");
+            PQclear(user_db);
+            user_db = NULL;
+        }
+    }
+    else
+    {
+        printf("DB: Database non trovato, gruppi non caricati\n");
+    }
+
+    disconnetti_db(miaconn);
+    return user_db;
+}
 
 int insert_utente_db(const char * const nome, const char * const password) {
     PGconn *miaconn;
