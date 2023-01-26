@@ -38,7 +38,7 @@ int main ()
     // flag = insert_notifica_db (user,gruppo);
     // if (flag == 1)
     //     printf ("OK\n");
-    risultato = select_utente (user);
+    risultato = select_socket_amministratore (gruppo);
     num = PQntuples (risultato);
     for (i=0;i<num;i++)
     {
