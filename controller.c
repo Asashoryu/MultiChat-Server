@@ -317,7 +317,7 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     }
     else {
         format_messaggio_risposta(SENDMESSOK, pacchetto_da_spedire);
-        set_manda_messaggio(array_socket, dim, socket_fd, nome_utente, nome_gruppo);
+        //set_manda_messaggio(array_socket, dim, socket_fd, nome_utente, nome_gruppo);
         format_add_inizio_body(pacchetto_da_spedire);
         format_add_inizio_gruppi(pacchetto_da_spedire);
         format_add_inizio_gruppo(pacchetto_da_spedire);
