@@ -213,6 +213,37 @@ PGresult *select_gruppi_senza_utente(const char * const nome_utente) {
     return gruppi_db;
 }
 
+PGresult * select_socket_gruppo (const char * const nome_gruppo, const char const nome_utente)
+{
+    PGconn *miaconn   = NULL;
+    PGresult *socket_db = NULL;
+    char comandoSQL[2000];
+    char errore[1000];
+
+    miaconn = connetti_db(CONNSTRINGA);
+
+    if (miaconn != NULL)
+    {
+        sprintf(comandoSQL,"select * from utente as u, membership as mem where u.nome = mem.nome_utente and mem.nome_gruppo = %s and u.nome <> %s and u.connessione is not null",nome_gruppo,nome_utente);
+        socket_db = PQexec(miaconn,comandoSQL);
+        strcpy(errore, PQresultErrorMessage(socket_db));
+        if(strlen(errore) > 0)
+        {
+            printf("%s\n",errore);
+            printf("DB: errore nel comando select, gruppi non trovati\n");
+            PQclear(socket_db);
+            socket_db = NULL;
+        }
+    }
+    else
+    {
+        printf("DB: Database non trovato, gruppi non caricati\n");
+    }
+
+    disconnetti_db(miaconn);
+    return socket_db;
+}
+
 
 int insert_utente_db(const char * const nome, const char * const password) {
     PGconn *miaconn;
