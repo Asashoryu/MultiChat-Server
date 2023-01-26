@@ -213,7 +213,7 @@ PGresult *select_gruppi_senza_utente(const char * const nome_utente) {
     return gruppi_db;
 }
 
-PGresult * select_socket_gruppo (const char * const nome_gruppo, const char const nome_utente)
+PGresult *select_socket_gruppo (const char * const nome_gruppo, const char * const nome_utente)
 {
     PGconn *miaconn   = NULL;
     PGresult *socket_db = NULL;
@@ -224,7 +224,7 @@ PGresult * select_socket_gruppo (const char * const nome_gruppo, const char cons
 
     if (miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from utente as u, membership as mem where u.nome = mem.nome_utente and mem.nome_gruppo = %s and u.nome <> %s and u.connessione is not null",nome_gruppo,nome_utente);
+        sprintf(comandoSQL,"select * from utente as u, membership as mem where u.nome = mem.nome_utente and mem.nome_gruppo = '%s' and u.nome <> '%s' and u.connessione is not null",nome_gruppo,nome_utente);
         socket_db = PQexec(miaconn,comandoSQL);
         strcpy(errore, PQresultErrorMessage(socket_db));
         if(strlen(errore) > 0)

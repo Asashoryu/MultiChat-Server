@@ -31,18 +31,18 @@ int main ()
     // printf ("%s %s\n",nome,password);
     // dealloca_signin(&nome,&password);
 
-    strcpy (gruppo,"Gruppo1");
-    strcpy (user,"Pino");
+    strcpy (gruppo,"Mondo");
+    strcpy (user,"Trincalex");
     strcpy (mess,"Welaaaaa");
 
-    flag = insert_notifica_db (user,gruppo);
-    if (flag == 1)
-        printf ("OK\n");
-    // risultato = select_gruppi_senza_utente (user);
-    // num = PQntuples (risultato);
-    // for (i=0;i<num;i++)
-    // {
-    //     printf ("%s\n",PQgetvalue(risultato,i,0));
-    // }
+    // flag = insert_notifica_db (user,gruppo);
+    // if (flag == 1)
+    //     printf ("OK\n");
+    risultato = select_socket_gruppo (gruppo,user);
+    num = PQntuples (risultato);
+    for (i=0;i<num;i++)
+    {
+        printf ("%s\n",PQgetvalue(risultato,i,2));
+    }
     return 0;
 }
