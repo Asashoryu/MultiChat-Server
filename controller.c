@@ -253,15 +253,22 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
 
         format_add_mittente_messaggio(pacchetto_da_spedire, nome_utente);
         format_add_contenuto_messaggio(pacchetto_da_spedire, contenuto);
+
         format_add_minutaggio_messaggio(pacchetto_da_spedire, minutaggio);
 
+
         format_add_fine_messaggio(pacchetto_da_spedire);
+
         format_add_fine_messaggi(pacchetto_da_spedire);
+
 
         format_add_fine_gruppo(pacchetto_da_spedire);
 
+
         format_add_fine_gruppi(pacchetto_da_spedire);
+
         format_add_fine_body(pacchetto_da_spedire);
+
     }
 
     format_add_fine_pacchetto(pacchetto_da_spedire);
@@ -278,7 +285,7 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
     format_add_inizio_pacchetto(pacchetto_da_spedire);
     
     alloca_cerca_gruppo(&nome_gruppo, &nome_utente);
-    parse_cerca_gruppo(pacchetto_da_spedire, nome_utente, nome_gruppo);
+    parse_cerca_gruppo(pacchetto, nome_gruppo, nome_utente);
 
     gruppi_trovati = select_gruppi_senza_utente(nome_utente);
     if (gruppi_trovati == NULL) {
@@ -311,7 +318,7 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
 
     alloca_manda_notifica(&nome_gruppo, &nome_utente);
 
-    parse_manda_notifica(pacchetto_da_spedire, nome_utente, nome_gruppo);
+    parse_manda_notifica(pacchetto, nome_gruppo, nome_utente);
     
     inserito = insert_notifica_db(nome_utente, nome_gruppo);
     if (inserito == 0) {
@@ -357,7 +364,9 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
 
     alloca_accetta_notifica(&nome_gruppo, &nome_utente, &nome_richiedente);
 
-    parse_accetta_notifica(pacchetto, nome_utente, nome_gruppo, nome_richiedente);
+    parse_accetta_notifica(pacchetto, nome_gruppo, nome_utente, nome_richiedente);
+
+    printf ("%s %s %s",nome_gruppo,nome_utente,nome_richiedente);
 
     inserito = insert_membership_db(nome_richiedente, nome_gruppo);
     

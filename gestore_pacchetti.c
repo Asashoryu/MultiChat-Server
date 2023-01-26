@@ -176,6 +176,7 @@ void parse_cerca_gruppo(const char * const pacchetto, char * nome_gruppo, char *
     char comando[200];
 
     strcpy (comando,pacchetto);
+    printf ("%s\n",comando);
     inizio = strstr (comando,"gruppo=");
     inizio += strlen ("gruppo=");
     fine = strstr (inizio,"\r\n");
@@ -343,8 +344,8 @@ void dealloca_crea_gruppo (char **nome_gruppo, char **nome_utente)
 
 void dealloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, char **minutaggio)
 {
-    free (nome_gruppo);
-    free (nome_utente);
+    free (*nome_gruppo);
+    free (*nome_utente);
     free(*messaggio);
     free(*minutaggio);
     *messaggio = NULL;
@@ -420,17 +421,17 @@ void format_signin_risposta(const int comando, char * const pacchetto_da_spedire
 void format_crea_gruppo_risposta(const int comando, char * const pacchetto_da_spedire) {
     if (comando == CREAGRUPOK) {
         format_add_inizio_intestazione(pacchetto_da_spedire);
-        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Gruppo creato con successo\r\n", LOGINOK);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Gruppo creato con successo\r\n", CREAGRUPOK);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == CREAGRUPERR) {
         format_add_inizio_intestazione(pacchetto_da_spedire);
-        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nella creazione del gruppo: non è stato possibile accedere al Database\r\n", LOGINERR);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nella creazione del gruppo: non è stato possibile accedere al Database\r\n", CREAGRUPERR);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == CREAGRUPGIAREGISTRATO) {
         format_add_inizio_intestazione(pacchetto_da_spedire);
-        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Il gruppo esiste già\r\n", SIGNGIAREGISTRATO);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Il gruppo esiste già\r\n", CREAGRUPGIAREGISTRATO);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
