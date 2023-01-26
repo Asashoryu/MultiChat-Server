@@ -427,11 +427,9 @@ void processa(const char * const pacchetto, char **  pacchetto_da_spedire, int *
     *pacchetto_da_spedire = alloca_pacchetto();
 
     if (comando == LOGIN) {
-        printf("Debug: entrato in login\n");
         processa_login(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == SIGNIN) {
-        printf("Debug: entrato in signin\n");
         processa_signin(pacchetto, *pacchetto_da_spedire, array_socket, dim);
     }
     else if (comando == CREAGRUP) {
