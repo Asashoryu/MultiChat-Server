@@ -32,15 +32,31 @@ void set_manda_indietro(int ** array, int * dim, int socket_fd) {
 }
 
 void set_manda_notifica(int ** array, int * dim, int socket_richiedente, const char * const nome_gruppo) {
+    PGresult * accettante;
     *dim = 2;
-    alloca_array(array, dim);
+    accettante = check_se_utente(nome_gruppo);
+    if (accettante == NULL || PQntuples(accettante) == 0) {
+        set_manda_indietro(array, dim, socket_richiedente);
+    }
+    else {
+        alloca_array(array, dim);   
+        array[0] = PQgetvalue(accettante, 0, 2);
+        array[1] = socket_richiedente;
+    }
 }
 
 void set_accetta_notifica(int ** array, int * dim, int socket_accettante, const char * const nome_richiedente) {
     PGresult * richiedente;
     *dim = 2;
-    alloca_array(array, dim);
-    richiedente = check_se_utente_registrato()
+    richiedente = check_se_utente(nome_richiedente);
+    if (richiedente == NULL || PQntuples(richiedente) == 0) {
+        set_manda_indietro(array, dim, socket_accettante);
+    }
+    else {
+        alloca_array(array, dim);   
+        array[0] = PQgetvalue(richiedente, 0, 2);
+        array[1] = socket_accettante;
+    }
 }
 
 void set_manda_messaggio(int ** array, int * dim, int socket_fd, const char * const nome_utente, const char * const nome_gruppo) {
