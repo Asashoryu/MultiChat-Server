@@ -14,6 +14,7 @@ PGresult *select_messaggi_gruppo_utente(const char * const nome_gruppo);
 PGresult *select_notifiche_gruppo_utente(const char * const nome_gruppo);
 PGresult *select_utenti_connessi();
 PGresult *select_gruppi_senza_utente(const char * const nome_utente);
+PGresult *select_socket_gruppo (const char * const nome_gruppo, const char * const nome_utente);
 
 int insert_gruppo_db(const char * const nome, const char * const amministratore);
 int insert_utente_db(const char * const nome, const char * const password);
