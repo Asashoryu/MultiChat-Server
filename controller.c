@@ -152,22 +152,21 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
         format_signin_risposta(SIGNINERR, pacchetto_da_spedire);
     }
     else {
-        inserito = insert_utente_db(nome, password);
-        //errore DB
-        if (inserito  == 0) {
-            format_signin_risposta(SIGNINERR, pacchetto_da_spedire);
+        // se utente guà registrato 
+        if (PQntuples(utente_registrato) == 1) {
+            format_signin_risposta(SIGNGIAREGISTRATO, pacchetto_da_spedire);
         }
+        // se non ancora registrato
         else {
-            // se utente guà registrato
-            if (PQntuples(utente_registrato) == 1) {
-                format_signin_risposta(SIGNGIAREGISTRATO, pacchetto_da_spedire);
+            inserito = insert_utente_db(nome, password);
+            //errore DB
+            if (inserito  == 0) {
+                format_signin_risposta(SIGNINERR, pacchetto_da_spedire);
             }
-            // se non ancora registrato
             else {
                 format_signin_risposta(SIGNINOK, pacchetto_da_spedire);
                 format_add_inizio_body(pacchetto_da_spedire);
                 format_add_fine_body(pacchetto_da_spedire);
-
             }
         }
     }
