@@ -55,6 +55,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             int num_notifiche_gruppo;
             printf(" 5");
             format_login_risposta(LOGINOK, pacchetto_da_spedire);
+            format_add_inizio_body(pacchetto_da_spedire);
             printf(" 6");
             gruppi_utente = select_gruppi_utente(nome);
             printf(" 7");
@@ -122,6 +123,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             PQclear(gruppi_utente);
 
             format_add_fine_gruppi(pacchetto_da_spedire);
+            format_add_fine_body(pacchetto_da_spedire);
         }
     }
 
@@ -163,6 +165,9 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
             // se non ancora registrato
             else {
                 format_signin_risposta(SIGNINOK, pacchetto_da_spedire);
+                format_add_inizio_body(pacchetto_da_spedire);
+                format_add_fine_body(pacchetto_da_spedire);
+
             }
         }
     }
@@ -206,6 +211,8 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
             // se non ancora registrato
             else {
                 format_crea_gruppo_risposta(CREAGRUPOK, pacchetto_da_spedire);
+                format_add_inizio_body(pacchetto_da_spedire);
+                format_add_fine_body(pacchetto_da_spedire);
             }
         }
     }
@@ -236,12 +243,26 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     }
     else {
         format_messaggio_risposta(SENDMESSOK, pacchetto_da_spedire);
+        format_add_inizio_body(pacchetto_da_spedire);
+        format_add_inizio_gruppi(pacchetto_da_spedire);
+        format_add_inizio_gruppo(pacchetto_da_spedire);
+
         format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
+
         format_add_inizio_messaggi(pacchetto_da_spedire);
+        format_add_inizio_messaggio(pacchetto_da_spedire);
+
         format_add_mittente_messaggio(pacchetto_da_spedire, nome_utente);
         format_add_contenuto_messaggio(pacchetto_da_spedire, contenuto);
         format_add_minutaggio_messaggio(pacchetto_da_spedire, minutaggio);
+
+        format_add_fine_messaggio(pacchetto_da_spedire);
         format_add_fine_messaggi(pacchetto_da_spedire);
+
+        format_add_fine_gruppo(pacchetto_da_spedire);
+
+        format_add_fine_gruppi(pacchetto_da_spedire);
+        format_add_fine_body(pacchetto_da_spedire);
     }
 
     format_add_fine_pacchetto(pacchetto_da_spedire);
@@ -266,11 +287,13 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
     }
     else {
         format_cerca_gruppo(SEARCHGRUPOK, pacchetto_da_spedire);
+        format_add_inizio_body(pacchetto_da_spedire);
         format_add_inizio_gruppi(pacchetto_da_spedire);
         for (int i = 0; i < PQntuples(gruppi_trovati); i++) {
             format_add_nome_gruppo(pacchetto_da_spedire, PQgetvalue(gruppi_trovati, i, 0));
         }
         format_add_fine_gruppi(pacchetto_da_spedire);
+        format_add_fine_body(pacchetto_da_spedire);
     }
 
     format_add_fine_pacchetto(pacchetto_da_spedire);
@@ -296,10 +319,25 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
         format_manda_notifica(SENDNOTIFICAERR, pacchetto_da_spedire);
     }
     else {
-        format_manda_notifica(SENDNOTIFICA, pacchetto_da_spedire);
+        format_manda_notifica(SENDNOTIFICAOK, pacchetto_da_spedire);
+
+        format_add_inizio_body(pacchetto_da_spedire);
+        format_add_inizio_gruppi(pacchetto_da_spedire);
+        format_add_inizio_gruppo(pacchetto_da_spedire);
+            format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
         format_add_inizio_notifiche(pacchetto_da_spedire);
+
+        format_add_inizio_notifica(pacchetto_da_spedire);
+
+        format_add_notificante(pacchetto_da_spedire, nome_utente);
         format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
+
+        format_add_fine_notifica(pacchetto_da_spedire);
+
         format_add_fine_notifiche(pacchetto_da_spedire);
+        format_add_fine_gruppo(pacchetto_da_spedire);
+        format_add_fine_gruppi(pacchetto_da_spedire);
+        format_add_fine_body(pacchetto_da_spedire);
     }
 
     format_add_fine_pacchetto(pacchetto_da_spedire);
@@ -336,7 +374,11 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
             messaggi_gruppo = select_messaggi_gruppo_utente(nome_gruppo);
             format_accetta_notifica(ACCETTAUTOK, pacchetto_da_spedire);
 
+            format_add_inizio_body(pacchetto_da_spedire);
+
             format_add_inizio_gruppi(pacchetto_da_spedire);
+
+            format_add_inizio_gruppo(pacchetto_da_spedire);
 
             format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
             format_add_inizio_messaggi(pacchetto_da_spedire);
@@ -349,8 +391,11 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
             }
 
             format_add_fine_messaggi(pacchetto_da_spedire);
+            format_add_fine_gruppo(pacchetto_da_spedire);
 
             format_add_fine_gruppi(pacchetto_da_spedire);
+
+            format_add_fine_body(pacchetto_da_spedire);
 
             PQclear(messaggi_gruppo);
         }

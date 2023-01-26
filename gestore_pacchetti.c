@@ -547,7 +547,7 @@ void format_add_inizio_pacchetto(char* pacchetto_da_spedire) {
 }
 
 void format_add_fine_pacchetto(char* pacchetto_da_spedire) {
-    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</pacchetto>\r\n");
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</pacchetto>\r\n\r\n");
 }
 
 void format_add_inizio_intestazione(char* pacchetto_da_spedire) {
@@ -556,6 +556,14 @@ void format_add_inizio_intestazione(char* pacchetto_da_spedire) {
 
 void format_add_fine_intestazione(char* pacchetto_da_spedire) {
     sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</head>\r\n");
+}
+
+void format_add_inizio_body(char* pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "<body>\r\n");
+}
+
+void format_add_fine_body(char* pacchetto_da_spedire) {
+    sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "</body>\r\n");
 }
 
 void format_add_nome_gruppo(char * pacchetto_da_spedire, const char * const nome_gruppo) {

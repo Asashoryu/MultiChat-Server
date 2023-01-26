@@ -95,6 +95,8 @@ void format_add_inizio_pacchetto(char* pacchetto_da_spedire);
 void format_add_fine_pacchetto(char* pacchetto_da_spedire);
 void format_add_inizio_intestazione(char* pacchetto_da_spedire);
 void format_add_fine_intestazione(char* pacchetto_da_spedire);
+void format_add_inizio_body(char* pacchetto_da_spedire);
+void format_add_fine_body(char* pacchetto_da_spedire);
 
 void format_add_nome_gruppo(char * pacchetto_da_spedire, const char * const nome_gruppo);
 void format_add_mittente_messaggio(char * pacchetto_da_spedire, const char * const nome_mittente_messaggio);
