@@ -653,24 +653,59 @@ int update_stato_connessione_utente(const char * const nome, const int socket) {
         if(strlen(errore) > 0)
         {
             printf("%s\n",errore);
-            printf("DB: errore nel comando insert, utente non inserito\n");
+            printf("DB: errore nel comando update, connessione non aggiornata\n");
         }
         else
         {
-            printf("DB: utente inserito con successo\n");
+            printf("DB: connessione aggiornata con successo con successo\n");
             flag = 1;
         }
         PQclear(exe);
     }
     else
     {
-        printf("DB: database non trovato, utente non inserito\n");
+        printf("DB: database non trovato, connessione non aggiornata\n");
     }
 
     disconnetti_db(miaconn);
     return flag;
 }
 
+int annulla_connessione_utente(const char * const nome)
+{
+    PGconn *miaconn;
+    PGresult *exe;
+    char comandoSQL[2000];
+    char errore[1000];
+    int flag = 0;
+
+    miaconn = connetti_db(CONNSTRINGA);
+
+    if(miaconn != NULL)
+    {
+        sprintf(comandoSQL,"Update utente set connessione = null where nome = '%s'", nome);
+        exe = PQexec(miaconn, comandoSQL);
+        strcpy(errore, PQresultErrorMessage(exe));
+        if(strlen(errore) > 0)
+        {
+            printf("%s\n",errore);
+            printf("DB: errore nel comando update, connessione non rimossa\n");
+        }
+        else
+        {
+            printf("DB: connessione rimossa con successo con successo\n");
+            flag = 1;
+        }
+        PQclear(exe);
+    }
+    else
+    {
+        printf("DB: database non trovato, connessione non rimossa\n");
+    }
+
+    disconnetti_db(miaconn);
+    return flag;
+}
 
 void stampa_result_query(PGresult *result_query) {
     char errore[1000];
