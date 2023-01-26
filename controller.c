@@ -309,7 +309,6 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
     format_add_inizio_pacchetto(pacchetto_da_spedire);
 
     alloca_messaggio(&nome_gruppo, &nome_utente, &contenuto, &minutaggio);
-    printf ("\n");
     parse_messaggio(pacchetto, nome_gruppo, nome_utente, contenuto, minutaggio);
     inserito = insert_messaggio_db(nome_utente, nome_gruppo, contenuto, minutaggio);
     if (inserito == 0) {
