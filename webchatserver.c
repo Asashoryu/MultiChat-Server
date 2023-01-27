@@ -84,9 +84,6 @@ int main() {
 		printf("Server: in ascolto\n");
 	}
 
-	struct timeval timeout;
-	timeout.tv_sec = 1;
-	timeout.tv_usec = 500000;
 
 	fd_set socket_aperte;
 	FD_ZERO(&socket_aperte);
@@ -99,17 +96,23 @@ int main() {
 
 		fd_set socket_leggibili;
 		FD_ZERO(&socket_leggibili);
+		struct timeval timeout;
+		timeout.tv_sec = 1;
+		timeout.tv_usec = 500000;
 
-		socket_leggibili = socket_aperte;
+		memcpy(&socket_leggibili, &socket_aperte, sizeof(socket_aperte));
+
 		if (select(max_socket + 1, &socket_leggibili, 0, 0, &timeout) < 0) {
 			fprintf(stderr, "select() fallita. (%d)\n", errno);
 			return 1;
 		}
 
 		int i;
-		for (int i = 1; i <= max_socket; ++i) {
+		for (int i = 0; i <= max_socket; ++i) {
 			if (FD_ISSET(i, &socket_leggibili)) {
 
+				printf("Il ciclo e %d\n", i);
+				
 				if (i == socket_ascolta) {
 
 					struct sockaddr_storage indirizzo_client;
@@ -125,7 +128,7 @@ int main() {
 						max_socket = socket_client;
 					}
 
-					setsockopt(socket_client,SOL_SOCKET,SO_REUSEADDR, 0, sizeof(int));
+					//setsockopt(socket_client,SOL_SOCKET,SO_REUSEADDR, 0, sizeof(int));
 
 					char indirizzo_buffer[100];
 					getnameinfo((struct sockaddr*) &indirizzo_client, indirizzo_client_len, indirizzo_buffer, sizeof(indirizzo_buffer), 0, 0, NI_NUMERICHOST);
@@ -150,14 +153,14 @@ int main() {
 					int * array;
 					int dim;
 					printf("questa è la socket prima di essere processata: %d\n", i);
-					processa(buffer_read, &pacchetto_da_spedire, &array, &dim, i);
+					processa(buffer_read, &pacchetto_da_spedire, &array, &dim, &i);
 
 					int pacchetto_da_spedire_len = strlen(pacchetto_da_spedire);
 
 					printf("\nEcco il pacchetto che sarebbe spedito di dimensione %d:\n%s", pacchetto_da_spedire_len, pacchetto_da_spedire);
 
 					printf("%d e la dimensione dell'array di socket da spedire\n", dim);
-					
+
 					for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
 
 					array[dim-1] = i;
@@ -166,7 +169,7 @@ int main() {
 
 					for (int z = 0; z < dim; z++) {
 						int begin = 0;
-						if (FD_ISSET(array[z], &socket_aperte)) {
+						if(FD_ISSET(array[z], &socket_aperte)) {
 							while(begin < pacchetto_da_spedire_len) {
 								int sent = send(array[z], pacchetto_da_spedire + begin, pacchetto_da_spedire_len - begin, 0);
 								if (sent == -1) {
