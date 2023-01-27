@@ -28,6 +28,7 @@ void handle_sigint(int sig)
 	for (int i = 0; i < max_socket; i++) {
 		close(i);
 	}
+	exit (0);
 }
 
 // tiene traccia di tutti gli utenti online e accetta le richieste di messaggio di quelli attivi presso le loro chat reindirizzandole
@@ -166,7 +167,7 @@ int main() {
 
 					for (int z = 0; z < dim; z++) {
 						int begin = 0;
-						if (FD_ISSET(array[z], &socket_aperte)) {
+						if (/*FD_ISSET(array[z], &socket_aperte)*/1) {
 							while(begin < pacchetto_da_spedire_len) {
 								int sent = send(array[z], pacchetto_da_spedire + begin, pacchetto_da_spedire_len - begin, 0);
 								if (sent == -1) {
