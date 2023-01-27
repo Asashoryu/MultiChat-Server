@@ -21,17 +21,16 @@ char *alloca_array(int ** array, int dim) {
 }
 
 void dealloca_array(int ** array) {
-    *array = NULL;
     free(*array);
 }
 
-void set_manda_indietro(int ** array, int * dim, int socket_fd) {
+void set_manda_indietro(int ** const array, int * dim, const int socket_fd) {
     *dim = 1;
     alloca_array(array, *dim);
     *array[0] = socket_fd;
 }
 
-void set_manda_notifica(int ** array, int * dim, int socket_richiedente, const char * const nome_gruppo) {
+void set_manda_notifica(int ** const array, int * dim, const int socket_richiedente, const char * const nome_gruppo) {
     PGresult * accettante;
     *dim = 2;
     accettante = select_socket_amministratore(nome_gruppo);
@@ -45,7 +44,7 @@ void set_manda_notifica(int ** array, int * dim, int socket_richiedente, const c
     }
 }
 
-void set_accetta_notifica(int ** array, int * dim, int socket_accettante, const char * const nome_richiedente) {
+void set_accetta_notifica(int ** const array, int * dim, const int socket_accettante, const char * const nome_richiedente) {
     PGresult * richiedente;
     *dim = 2;
     richiedente = check_se_utente_connesso(nome_richiedente);
@@ -59,7 +58,7 @@ void set_accetta_notifica(int ** array, int * dim, int socket_accettante, const 
     }
 }
 
-void set_manda_messaggio(int ** array, int * dim, int socket_fd, const char * const nome_utente, const char * const nome_gruppo) {
+void set_manda_messaggio(int ** const array, int * dim, const int socket_fd, const char * const nome_utente, const char * const nome_gruppo) {
     PGresult * socket_gruppo;
     int num_risultati;
     socket_gruppo = select_socket_gruppo(nome_gruppo, nome_utente);
@@ -77,7 +76,7 @@ void set_manda_messaggio(int ** array, int * dim, int socket_fd, const char * co
     }
 }
 
-void processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+void processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     PGresult *utente_registrato;
 
     char * nome;
@@ -121,6 +120,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
             set_manda_indietro(array_socket, dim, socket_fd);
             format_add_inizio_body(pacchetto_da_spedire);
             printf(" 6");
+
             update_stato_connessione_utente(nome, socket_fd);
 
             gruppi_utente = select_gruppi_utente(nome);
@@ -198,7 +198,7 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
     dealloca_login(&nome, &password);
 }
 
-void processa_signin(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+void processa_signin(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     PGresult *utente_registrato;
     int inserito = 0;
 
@@ -248,7 +248,7 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
     dealloca_signin(&nome, &password);
 }
 
-void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     PGresult *gruppo_registrato = 0;
     int inserito = 0;
 
@@ -297,8 +297,7 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
     dealloca_crea_gruppo(&nome_gruppo, &nome_utente);
 }
 
-void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
-    PGresult * utenti_connessi;
+void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     int inserito = 0;
 
     char * nome_gruppo;
@@ -346,14 +345,12 @@ void processa_messaggio(const char * const pacchetto, char * const pacchetto_da_
         format_add_fine_body(pacchetto_da_spedire);
 
     }
-
     format_add_fine_pacchetto(pacchetto_da_spedire);
 
-    PQclear(utenti_connessi);
     dealloca_messaggio(&nome_gruppo, &nome_utente, &contenuto, &minutaggio);
 }
 
-char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     PGresult *gruppi_trovati;
     char * nome_utente;
     char * nome_gruppo;
@@ -386,7 +383,7 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
     dealloca_cerca_gruppo(&nome_gruppo, &nome_utente);
 }
 
-char * processa_manda_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+char * processa_manda_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     int inserito;
 
     char * nome_utente;
@@ -431,7 +428,7 @@ char * processa_manda_notifica(const char * const pacchetto, char * const pacche
     dealloca_manda_notifica(&nome_gruppo, &nome_utente);
 }
 
-char *processa_accetta_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+char *processa_accetta_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     PGresult *messaggi_gruppo;
     int rimossa = 0;
     int inserito = 0;
@@ -497,25 +494,23 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
     dealloca_accetta_notifica(&nome_gruppo, &nome_utente, &nome_richiedente);
 }
 
-char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     format_add_inizio_pacchetto(pacchetto_da_spedire);
     format_pacchetto_non_riconosciuto(PACCHETTONONCOMPRESO, pacchetto_da_spedire);
     set_manda_indietro(array_socket, dim, socket_fd);
     format_add_fine_pacchetto(pacchetto_da_spedire);
 }
 
-void processa(const char * const pacchetto, char **  pacchetto_da_spedire, int ** array_socket, int * dim, int socket_fd) {
+void processa(const char * const pacchetto, char **  pacchetto_da_spedire, int ** const array_socket, int * dim, const int socket_fd) {
     int comando;
 
     comando = parse_comando(pacchetto);
     *pacchetto_da_spedire = alloca_pacchetto();
 
     if (comando == LOGIN) {
-        printf("Debug: entrato in login\n");
         processa_login(pacchetto, *pacchetto_da_spedire, array_socket, dim, socket_fd);
     }
     else if (comando == SIGNIN) {
-        printf("Debug: entrato in signin\n");
         processa_signin(pacchetto, *pacchetto_da_spedire, array_socket, dim, socket_fd);
     }
     else if (comando == CREAGRUP) {

@@ -13,11 +13,23 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <signal.h>
 
 #include "controller.h"
 
 #define DIMBUFF 256
 #define PORTA "10000"
+
+int max_socket = 0;
+
+void handle_sigint(int sig)
+{
+    printf("\nCatturato signal %d\n", sig);
+	for (int i = 0; i < max_socket; i++) {
+		close(i);
+	}
+}
+
 // tiene traccia di tutti gli utenti online e accetta le richieste di messaggio di quelli attivi presso le loro chat reindirizzandole
 //presso gli utenti giusti
 int main() {
@@ -38,6 +50,7 @@ int main() {
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
+	signal(SIGINT, handle_sigint);
 	getaddrinfo(0, PORTA, &hints, &indirizzo_bind);
 
 	// creazione socket
@@ -50,6 +63,8 @@ int main() {
 		printf("Server: socket server creata\n");
 	}
 
+	setsockopt(socket_ascolta,SOL_SOCKET,SO_REUSEADDR, 0, sizeof(int));
+
 	//bind
 	if (bind(socket_ascolta, indirizzo_bind->ai_addr, indirizzo_bind->ai_addrlen) != 0) {
 			perror("Errore nel bind della server socket");
@@ -58,6 +73,7 @@ int main() {
 	else {
 		printf("Server: bind riuscito\n");
 	}
+	freeaddrinfo(indirizzo_bind);
 
 	// listen
 	if (listen(socket_ascolta, 10) < 0){
@@ -68,17 +84,24 @@ int main() {
 		printf("Server: in ascolto\n");
 	}
 
+	struct timeval timeout;
+	timeout.tv_sec = 1;
+	timeout.tv_usec = 500000;
+
 	fd_set socket_aperte;
 	FD_ZERO(&socket_aperte);
 	FD_SET(socket_ascolta, &socket_aperte);
-	int max_socket = socket_ascolta;
+	
+	max_socket = socket_ascolta;
 
 	// accept
 	while(1) {
 
 		fd_set socket_leggibili;
+		FD_ZERO(&socket_leggibili);
+
 		socket_leggibili = socket_aperte;
-		if (select(max_socket + 1, &socket_leggibili, 0, 0, 0) < 0) {
+		if (select(max_socket + 1, &socket_leggibili, 0, 0, &timeout) < 0) {
 			fprintf(stderr, "select() fallita. (%d)\n", errno);
 			return 1;
 		}
@@ -102,9 +125,11 @@ int main() {
 						max_socket = socket_client;
 					}
 
+					setsockopt(socket_client,SOL_SOCKET,SO_REUSEADDR, 0, sizeof(int));
+
 					char indirizzo_buffer[100];
 					getnameinfo((struct sockaddr*) &indirizzo_client, indirizzo_client_len, indirizzo_buffer, sizeof(indirizzo_buffer), 0, 0, NI_NUMERICHOST);
-					printf("Server: accettata una nuova connessione da %s\n", indirizzo_buffer);
+					printf("Server: accettata una nuova connessione da %s con socket %d\n", indirizzo_buffer, socket_client);
 				}
 				else {
 					char buffer_read[DIMBUFF];
@@ -124,129 +149,42 @@ int main() {
 					char * pacchetto_da_spedire;
 					int * array;
 					int dim;
+					printf("questa è la socket prima di essere processata: %d\n", i);
 					processa(buffer_read, &pacchetto_da_spedire, &array, &dim, i);
-					printf("\nEcco il pacchetto che sarebbe spedito di dimensione %ld:\n%s", strlen(pacchetto_da_spedire), pacchetto_da_spedire);
 
-					send(i, pacchetto_da_spedire, strlen(pacchetto_da_spedire), 0);
+					int pacchetto_da_spedire_len = strlen(pacchetto_da_spedire);
+
+					printf("\nEcco il pacchetto che sarebbe spedito di dimensione %d:\n%s", pacchetto_da_spedire_len, pacchetto_da_spedire);
+
+					printf("%d e la dimensione dell'array di socket da spedire\n", dim);
+					
+					for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
+
+					array[dim-1] = i;
+
+					for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
+
+					for (int z = 0; z < dim; z++) {
+						int begin = 0;
+						if (FD_ISSET(array[z], &socket_aperte)) {
+							while(begin < pacchetto_da_spedire_len) {
+								int sent = send(array[z], pacchetto_da_spedire + begin, pacchetto_da_spedire_len - begin, 0);
+								if (sent == -1) {
+									printf("Si è verificato un errore nella spedizione del pacchetto %d alla socket %d, con errore %d (%d)\n", z, array[z], sent, errno);
+								}
+								begin += sent;
+								printf("spedito pacchetto %d alla socket %d\n", z, array[z]);
+							}
+						}
+					}
+
+					printf("Finito di spedire i pacchetti\n");
 
 					dealloca_pacchetto(pacchetto_da_spedire);
 					dealloca_array(&array);
-					
-					// int j;
-					// for (j = 1; j <= max_socket; ++j) {
-					// 	if (FD_ISSET(j, &socket_aperte)) {
-					// 		if (j == socket_ascolta || j == i) {
-					// 			continue;
-					// 		}
-					// 		else {
-					// 			send(j, buffer_read, byte_ricevuti, 0);
-					// 		}
-					// 	}
-					// }
 				}
 			}
 		}
-
-		/*socket_client = accept(socket_ascolta, (struct sockaddr *) &indirizzo_client, &indirizzo_client_len);
-		if (socket_client < 0) {
-			perror("Errore nella creazione della client socket");
-			exit(-1);
-		}
-		else {
-			printf("Server: connessione accettata\n");
-		}
-		printf("socket_connessione = %d\n", socket_client);
-		// recv
-		printf("Si procede con la fork\n");
-
-		child_pid = fork();
-		// processo figlio
-		if (child_pid == 0) {
-				int byte_letti;
-				byte_letti = recv(socket_client, buffer, DIMBUFF, 0);
-				printf("%d caratteri letti dal server\n", byte_letti);
-				buffer[byte_letti] = '\0';
-				printf("Server: il messaggio ricevuto: %s\n", buffer);
-
-				char *inizio;
-				char *fine;
-				int dimensione;
-				char cmd[DIMBUFF];
-				char nome[DIMBUFF];
-				char password[DIMBUFF];
-
-				inizio = strstr(buffer, "cmd=");
-				inizio += strlen("cmd=");
-				fine = strstr(inizio, "\r\n");
-				if (inizio && fine) {
-					dimensione = fine-inizio;
-					printf("dimensione %d\n", dimensione);
-					strncpy(cmd, inizio, dimensione);
-					cmd[dimensione]='\0';
-					printf("il comando letto e' %s\n", cmd);
-				}
-				else {
-					printf("Errore: inizio e' NULL\n");
-				}
-
-				inizio = strstr(buffer, "nome=");
-				inizio += strlen("nome=");
-				fine = strstr(inizio, "\r\n");
-
-				if (inizio && fine) {
-					dimensione = fine-inizio;
-					printf("dimensione %d\n", dimensione);
-					strncpy(nome, inizio, dimensione);
-					nome[dimensione]='\0';
-					printf("il nome letto e' %s\n", nome);
-				}
-				else {
-					printf("Errore: inizio e' NULL\n");
-				}
-
-				inizio = strstr(buffer, "password=");
-				inizio += strlen("password=");
-				fine = strstr(inizio, "\r\n");
-				if (inizio && fine) {
-					dimensione = fine-inizio;
-					printf("dimensione %d\n", dimensione);
-					strncpy(password, inizio, dimensione);
-					password[dimensione]='\0';
-					printf("la password letta e' %s\n", password);
-				}
-				else {
-					printf("Errore: inizio e' NULL\n");
-				}
-
-				if(strcmp(nome, "pippo") == 0 && strcmp(password, "paolo") == 0) {
-					printf("Login OK\n");
-					send(socket_client, "1", 1, 0);
-				}
-				else {
-					printf("Login fallito\n");
-					send(socket_client, "0", 1, 0);
-				}
-
-
-				printf("Server: chiusa socket client\n");
-				close(socket_client);
-			close(child_pid);
-		}
-		// processo padre
-		else {
-			printf("entrato nel processo padre prima della wait\n");
-			wait(NULL);
-			printf("Superata wait del padre\n");
-			if (!close(socket_ascolta)) {
-				perror("Errore in chiusura della socket presso il server");
-				exit(-1);
-			}
-			else {
-				printf("Server: socket chiusa con successo\n");
-			}
-		}
-		printf("superato if ed else nella while dell'accept");
-		*/
 	}
 
 	close(socket_ascolta);

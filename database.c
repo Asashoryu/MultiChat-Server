@@ -406,7 +406,7 @@ int insert_messaggio_db(const char * const nome_utente, const char * const nome_
     {
         printf("DB: database non trovato, messaggio non inserito\n");
     }
-
+    printf("5 \n");
     disconnetti_db(miaconn);
     return flag;
 }
@@ -657,7 +657,7 @@ int update_stato_connessione_utente(const char * const nome, const int socket) {
         }
         else
         {
-            printf("DB: connessione aggiornata con successo con successo\n");
+            printf("DB: connessione aggiornata con successo con successo a %d\n", socket);
             flag = 1;
         }
         PQclear(exe);
