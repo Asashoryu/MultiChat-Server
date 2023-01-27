@@ -42,11 +42,11 @@ int main ()
     flag = annulla_connessione_utente (user);
     if (flag == 1)
         printf ("OK\n");
-    // risultato = select_socket_amministratore (gruppo);
-    // num = PQntuples (risultato);
-    // for (i=0;i<num;i++)
-    // {
-    //     printf ("%s %s %s\n",PQgetvalue(risultato,i,0),PQgetvalue(risultato,i,1),PQgetvalue(risultato,i,2));
-    // }
+    risultato = select_socket_gruppo (gruppo,user);
+    num = PQntuples (risultato);
+    for (i=0;i<num;i++)
+    {
+        printf ("%s\n",PQgetvalue(risultato,i,2));
+    }
     return 0;
 }

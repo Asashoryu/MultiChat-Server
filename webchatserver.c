@@ -28,6 +28,7 @@ void handle_sigint(int sig)
 	for (int i = 0; i < max_socket; i++) {
 		close(i);
 	}
+	exit (0);
 }
 
 // tiene traccia di tutti gli utenti online e accetta le richieste di messaggio di quelli attivi presso le loro chat reindirizzandole
