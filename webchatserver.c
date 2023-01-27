@@ -167,7 +167,7 @@ int main() {
 
 					for (int z = 0; z < dim; z++) {
 						int begin = 0;
-						if (/*FD_ISSET(array[z], &socket_aperte)*/1) {
+						if (FD_ISSET(array[z], &socket_aperte)) {
 							while(begin < pacchetto_da_spedire_len) {
 								int sent = send(array[z], pacchetto_da_spedire + begin, pacchetto_da_spedire_len - begin, 0);
 								if (sent == -1) {
