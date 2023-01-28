@@ -24,6 +24,16 @@ void dealloca_array(int ** const array) {
     free(*array);
 }
 
+int annulla_connessioni()
+{
+    return annulla_tutte_le_connessioni();
+}
+
+int annulla_connessione(const int socket)
+{
+    return annulla_connessione_socket(socket);
+}
+
 void set_manda_indietro(int ** const array, int * const dim, const int socket_fd) {
     *dim = 1;
     alloca_array(array, *dim);

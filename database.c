@@ -693,7 +693,7 @@ int annulla_connessione_utente(const char * const nome)
         }
         else
         {
-            printf("DB: connessione rimossa con successo con successo\n");
+            printf("DB: connessione rimossa con successo\n");
             flag = 1;
         }
         PQclear(exe);
@@ -701,6 +701,78 @@ int annulla_connessione_utente(const char * const nome)
     else
     {
         printf("DB: database non trovato, connessione non rimossa\n");
+    }
+
+    disconnetti_db(miaconn);
+    return flag;
+}
+
+int annulla_connessione_socket(const int socket)
+{
+    PGconn *miaconn;
+    PGresult *exe;
+    char comandoSQL[2000];
+    char errore[1000];
+    int flag = 0;
+
+    miaconn = connetti_db(CONNSTRINGA);
+
+    if(miaconn != NULL)
+    {
+        sprintf(comandoSQL,"Update utente set connessione = null where connessione = %d", socket);
+        exe = PQexec(miaconn, comandoSQL);
+        strcpy(errore, PQresultErrorMessage(exe));
+        if(strlen(errore) > 0)
+        {
+            printf("%s\n",errore);
+            printf("DB: errore nel comando update, connessione non rimossa\n");
+        }
+        else
+        {
+            printf("DB: connessione rimossa con successo\n");
+            flag = 1;
+        }
+        PQclear(exe);
+    }
+    else
+    {
+        printf("DB: database non trovato, connessione non rimossa\n");
+    }
+
+    disconnetti_db(miaconn);
+    return flag;
+}
+
+int annulla_tutte_le_connessioni()
+{
+    PGconn *miaconn;
+    PGresult *exe;
+    char comandoSQL[2000];
+    char errore[1000];
+    int flag = 0;
+
+    miaconn = connetti_db(CONNSTRINGA);
+
+    if(miaconn != NULL)
+    {
+        sprintf(comandoSQL,"Update utente set connessione = null");
+        exe = PQexec(miaconn, comandoSQL);
+        strcpy(errore, PQresultErrorMessage(exe));
+        if(strlen(errore) > 0)
+        {
+            printf("%s\n",errore);
+            printf("DB: errore nel comando update, connessioni non rimosse\n");
+        }
+        else
+        {
+            printf("DB: connessioni rimosse con successo\n");
+            flag = 1;
+        }
+        PQclear(exe);
+    }
+    else
+    {
+        printf("DB: database non trovato, connessioni non rimosse\n");
     }
 
     disconnetti_db(miaconn);

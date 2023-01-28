@@ -34,6 +34,8 @@ PGresult *check_se_utente_connesso(const char * const nome_utente);
 
 int update_stato_connessione_utente(const char * const nome, const int socket);
 int annulla_connessione_utente(const char * const nome);
+int annulla_connessione_socket(const int socket);
+int annulla_tutte_le_connessioni();
 
 void stampa_result_query(PGresult *result_query);
 
