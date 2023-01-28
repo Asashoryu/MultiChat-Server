@@ -386,7 +386,9 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
         format_add_inizio_body(pacchetto_da_spedire);
         format_add_inizio_gruppi(pacchetto_da_spedire);
         for (int i = 0; i < PQntuples(gruppi_trovati); i++) {
+            format_add_inizio_gruppo(pacchetto_da_spedire);
             format_add_nome_gruppo(pacchetto_da_spedire, PQgetvalue(gruppi_trovati, i, 0));
+            format_add_fine_gruppo(pacchetto_da_spedire);
         }
         format_add_fine_gruppi(pacchetto_da_spedire);
         format_add_fine_body(pacchetto_da_spedire);
