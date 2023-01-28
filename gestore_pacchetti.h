@@ -16,6 +16,7 @@
 #define SEARCHGRUP 500
 #define SENDNOTIFICA 600
 #define ACCETTAUT 700
+#define RIFIUTANOT 800
 // comandi OK (server)
 #define LOGINOK 111
 #define SIGNINOK 211
@@ -24,6 +25,7 @@
 #define SEARCHGRUPOK 511
 #define SENDNOTIFICAOK  611
 #define ACCETTAUTOK 711
+#define RIFIUTANOTOK 811
 // comandi ERROR (server)
 #define LOGINERR 112
 #define SIGNINERR 212
@@ -32,6 +34,7 @@
 #define SEARCHGRUPERR 512
 #define SENDNOTIFICAERR  612
 #define ACCETTAUTERR 712
+#define RIFIUTANOTERR 812
 // 3
 #define LOGINNONTROVATO 113
 #define SIGNGIAREGISTRATO 213
@@ -49,6 +52,7 @@ void parse_messaggio(const char * const pacchetto, char * nome_gruppo, char * no
 void parse_cerca_gruppo(const char * const pacchetto, char * nome_gruppo, char * nome_utente);
 void parse_manda_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente);
 void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * nome_richiedente);
+void parse_annulla_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * nome_richiedente);
 
 char *alloca_comando();
 void alloca_login(char **nome, char **password);
@@ -58,6 +62,7 @@ void alloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio, 
 void alloca_cerca_gruppo(char **nome_gruppo, char **nome_utente);
 void alloca_manda_notifica(char **nome_gruppo, char **nome_utente);
 void alloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente);
+void alloca_annulla_notifica(char **nome_gruppo, char **nome_utente, char **nome_richiedente);
 
 void dealloca_login(char **nome, char **password);
 void dealloca_signin(char **nome, char **password);
@@ -66,6 +71,7 @@ void dealloca_messaggio(char **nome_gruppo, char **nome_utente, char **messaggio
 void dealloca_cerca_gruppo(char **nome_gruppo, char **nome_utente);
 void dealloca_manda_notifica(char **nome_gruppo, char **nome_utente);
 void dealloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome_rihiedente);
+void dealloca_annulla_notifica(char **nome_gruppo, char **nome_utente, char **nome_richiedente);
 
 void format_login_risposta(const int comando, char * const pacchetto_da_spedire);
 void format_signin_risposta(const int comando, char * const pacchetto_da_spedire);
@@ -74,6 +80,7 @@ void format_messaggio_risposta(const int comando, char * const pacchetto_da_sped
 void format_cerca_gruppo(const int comando, char * const pacchetto_da_spedire);
 void format_manda_notifica(const int comando, char * const pacchetto_da_spedire);
 void format_accetta_notifica(const int comando, char * const pacchetto_da_spedire);
+void format_annulla_notifica(const int comando, char * const pacchetto_da_spedire);
 void format_pacchetto_non_riconosciuto(const int comando, char * const pacchetto_da_spedire);
 
 void format_add_inizio_gruppi(char * pacchetto_da_spedire);

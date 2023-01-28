@@ -507,6 +507,40 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
     dealloca_accetta_notifica(&nome_gruppo, &nome_utente, &nome_richiedente);
 }
 
+char *processa_annulla_notifica(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * const dim, const int socket_fd) {
+
+    char * nome_gruppo;
+    char * nome_utente;
+    char * nome_richiedente;
+    int rimosso;
+
+    format_add_inizio_pacchetto (pacchetto_da_spedire);
+
+    alloca_annulla_notifica (&nome_gruppo,&nome_utente,&nome_richiedente);
+    parse_annulla_notifica (pacchetto,nome_gruppo,nome_utente,nome_richiedente);
+
+    printf ("%s %s %s",nome_gruppo,nome_utente,nome_richiedente);
+
+    rimosso = delete_notifica_db (nome_richiedente,nome_gruppo);
+
+    if (rimosso == 0) {
+        format_annulla_notifica (RIFIUTANOTERR,pacchetto_da_spedire);
+        set_manda_indietro (array_socket,dim,socket_fd);
+    }
+    else {
+        format_annulla_notifica (RIFIUTANOTOK,pacchetto_da_spedire);
+
+        format_add_inizio_body(pacchetto_da_spedire);
+        format_add_fine_body(pacchetto_da_spedire);
+
+        set_manda_indietro (array_socket,dim,socket_fd);
+    }
+
+    format_add_fine_pacchetto(pacchetto_da_spedire);
+
+    dealloca_annulla_notifica(&nome_gruppo,&nome_utente,&nome_richiedente);
+}
+
 char *processa_pacchetto_non_riconosciuto(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * const dim, const int socket_fd) {
     format_add_inizio_pacchetto(pacchetto_da_spedire);
     format_pacchetto_non_riconosciuto(PACCHETTONONCOMPRESO, pacchetto_da_spedire);
@@ -540,6 +574,9 @@ void processa(const char * const pacchetto, char **  pacchetto_da_spedire, int *
     }
     else if (comando == ACCETTAUT) {
         processa_accetta_notifica(pacchetto, *pacchetto_da_spedire, array_socket, dim, *socket_fd);
+    }
+    else if (comando == RIFIUTANOT) {
+        processa_annulla_notifica(pacchetto, *pacchetto_da_spedire, array_socket, dim, *socket_fd);
     }
     else {
         processa_pacchetto_non_riconosciuto(pacchetto, *pacchetto_da_spedire, array_socket, dim, *socket_fd);

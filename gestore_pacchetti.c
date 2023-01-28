@@ -267,6 +267,46 @@ void parse_accetta_notifica(const char * const pacchetto, char * nome_gruppo, ch
     }
 }
 
+void parse_annulla_notifica(const char * const pacchetto, char * nome_gruppo, char * nome_utente, char * nome_richiedente)
+{
+    char *inizio;
+    char *fine;
+    int dim;
+    char comando[200];
+
+    strcpy (comando,pacchetto);
+    inizio = strstr (comando,"gruppo=");
+    inizio += strlen ("gruppo=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_gruppo,inizio,dim);
+        nome_gruppo[dim] = '\0';
+    }
+
+    inizio = strstr (comando,"utente=");
+    inizio += strlen ("utente=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_utente,inizio,dim);
+        nome_utente[dim] = '\0';
+    }
+
+    strcpy (comando,pacchetto);
+    inizio = strstr (comando,"richiedente=");
+    inizio += strlen ("richiedente=");
+    fine = strstr (inizio,"\r\n");
+    if (inizio && fine)
+    {
+        dim = fine-inizio;
+        strncpy (nome_richiedente,inizio,dim);
+        nome_richiedente[dim] = '\0';
+    }
+}
+
 char *alloca_comando()
 {
     return malloc (LN_STR*sizeof(char*));
@@ -316,6 +356,13 @@ void alloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **nome
     *nome_gruppo = malloc (LN_STR*sizeof(char));
     *nome_utente = malloc (LN_STR*sizeof(char));
     *nome_rihiedente = malloc (LN_STR*sizeof(char));
+}
+
+void alloca_annulla_notifica(char **nome_gruppo, char **nome_utente, char **nome_richiedente)
+{
+    *nome_gruppo = malloc (LN_STR*sizeof(char));
+    *nome_utente = malloc (LN_STR*sizeof(char));
+    *nome_richiedente = malloc (LN_STR*sizeof(char));
 }
 
 void dealloca_login(char **nome, char **password)
@@ -378,6 +425,16 @@ void dealloca_accetta_notifica(char **nome_gruppo, char **nome_utente, char **no
     *nome_gruppo = NULL;
     *nome_utente = NULL;
     *nome_rihiedente = NULL;
+}
+
+void dealloca_annulla_notifica(char **nome_gruppo, char **nome_utente, char **nome_richiedente)
+{
+    free(*nome_gruppo);
+    free(*nome_utente);
+    free(*nome_richiedente);
+    *nome_gruppo = NULL;
+    *nome_utente = NULL;
+    *nome_richiedente = NULL;
 }
 
 ////// formatting ///////
@@ -484,6 +541,19 @@ void format_accetta_notifica(const int comando, char * const pacchetto_da_spedir
     else if (comando == ACCETTAUTERR) {
         format_add_inizio_intestazione(pacchetto_da_spedire);
         sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nell'accettazione della notifica: non è stato possibile accedere al Database\r\n", ACCETTAUTERR);
+        format_add_fine_intestazione(pacchetto_da_spedire);
+    }
+}
+
+void format_annulla_notifica(const int comando, char * const pacchetto_da_spedire) {
+    if (comando == RIFIUTANOTOK) {
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Notifica annullata con successo\r\n",RIFIUTANOTOK);
+        format_add_fine_intestazione(pacchetto_da_spedire);
+    }
+    else if (comando == RIFIUTANOTERR) {
+        format_add_inizio_intestazione(pacchetto_da_spedire);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore mell'annullamento della notifica: non è stato possibile accedere al Database\r\n",RIFIUTANOTERR);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
