@@ -183,7 +183,7 @@ PGresult *select_utenti_connessi() {
         return utente_registrato_db;
 }
 
-PGresult *select_gruppi_senza_utente(const char * const nome_utente) {
+PGresult *select_gruppi_senza_utente(const char * const nome_utente, const char * const nome_gruppo) {
     PGconn *miaconn   = NULL;
     PGresult *gruppi_db = NULL;
     char comandoSQL[2000];
@@ -193,7 +193,7 @@ PGresult *select_gruppi_senza_utente(const char * const nome_utente) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from gruppo as gr where gr.nome  not in (select nome_gruppo from membership where nome_utente = '%s')", nome_utente);
+        sprintf(comandoSQL,"select * from gruppo as gr where gr.nome  not in (select nome_gruppo from membership where nome_utente = '%s') and gr.amministratore <> '%s' and gr.nome ilike '%%%s%%'", nome_utente,nome_utente,nome_gruppo);
         gruppi_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(gruppi_db));
         if(strlen(errore) > 0)

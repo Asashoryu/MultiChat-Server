@@ -373,7 +373,7 @@ char *processa_cerca_gruppo(const char * const pacchetto, char * const pacchetto
     alloca_cerca_gruppo(&nome_gruppo, &nome_utente);
     parse_cerca_gruppo(pacchetto, nome_gruppo, nome_utente);
 
-    gruppi_trovati = select_gruppi_senza_utente(nome_utente);
+    gruppi_trovati = select_gruppi_senza_utente(nome_utente,nome_gruppo);
     if (gruppi_trovati == NULL) {
         format_cerca_gruppo(SEARCHGRUPERR, pacchetto_da_spedire);
         set_manda_indietro(array_socket, dim, socket_fd);
