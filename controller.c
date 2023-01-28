@@ -290,6 +290,14 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
                 format_crea_gruppo_risposta(CREAGRUPOK, pacchetto_da_spedire);
                 set_manda_indietro(array_socket, dim, socket_fd);
                 format_add_inizio_body(pacchetto_da_spedire);
+                format_add_inizio_gruppi(pacchetto_da_spedire);
+                format_add_inizio_gruppo(pacchetto_da_spedire);
+
+                format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
+                
+                format_add_fine_gruppo(pacchetto_da_spedire);
+                format_add_fine_gruppi(pacchetto_da_spedire);
+
                 format_add_fine_body(pacchetto_da_spedire);
             }
         }
