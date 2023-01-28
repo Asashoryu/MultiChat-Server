@@ -256,6 +256,7 @@ void processa_signin(const char * const pacchetto, char * const pacchetto_da_spe
 void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * const dim, const int socket_fd) {
     PGresult *gruppo_registrato = 0;
     int inserito = 0;
+    int inserita_membership = 0;
 
     char * nome_gruppo;
     char * nome_utente;
@@ -280,6 +281,7 @@ void processa_crea_gruppo(const char * const pacchetto, char * const pacchetto_d
         }
         else {
             inserito = insert_gruppo_db(nome_gruppo, nome_utente);
+            inserita_membership = insert_membership_db(nome_utente, nome_gruppo);
             // errore DB
             if (inserito == 0) {
                 format_crea_gruppo_risposta(CREAGRUPERR, pacchetto_da_spedire);
