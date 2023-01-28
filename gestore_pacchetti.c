@@ -460,12 +460,12 @@ void format_login_risposta(const int comando, char * const pacchetto_da_spedire)
 void format_signin_risposta(const int comando, char * const pacchetto_da_spedire) {
     if (comando == SIGNINOK) {
         format_add_inizio_intestazione(pacchetto_da_spedire);
-        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Utente registrato con successo\r\n", LOGINOK);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Utente registrato con successo\r\n", SIGNINOK);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == SIGNINERR) {
         format_add_inizio_intestazione(pacchetto_da_spedire);
-        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nel sign in: non è stato possibile accedere al Database\r\n", LOGINERR);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nel sign in: non è stato possibile accedere al Database\r\n", SIGNINERR);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
     else if (comando == SIGNGIAREGISTRATO) {
