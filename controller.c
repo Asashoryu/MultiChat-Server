@@ -500,9 +500,11 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
 
             // aggiungi i messaggi
             for (int j = 0; j < PQntuples(messaggi_gruppo); j++) {
+                format_add_inizio_messaggio(pacchetto_da_spedire);
                 format_add_mittente_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppo, j, 1));
                 format_add_contenuto_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppo, j, 3));
                 format_add_minutaggio_messaggio(pacchetto_da_spedire, PQgetvalue(messaggi_gruppo, j, 4));
+                format_add_fine_messaggio(pacchetto_da_spedire);
             }
 
             format_add_fine_messaggi(pacchetto_da_spedire);
@@ -543,11 +545,18 @@ char *processa_annulla_notifica(const char * const pacchetto, char * const pacch
     }
     else {
         format_annulla_notifica (RIFIUTANOTOK,pacchetto_da_spedire);
+        set_manda_indietro (array_socket,dim,socket_fd);
 
         format_add_inizio_body(pacchetto_da_spedire);
+        format_add_inizio_gruppi(pacchetto_da_spedire);
+        format_add_inizio_gruppo(pacchetto_da_spedire);
+
+        format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
+
+        format_add_fine_gruppo(pacchetto_da_spedire);
+        format_add_fine_gruppi(pacchetto_da_spedire);
         format_add_fine_body(pacchetto_da_spedire);
 
-        set_manda_indietro (array_socket,dim,socket_fd);
     }
 
     format_add_fine_pacchetto(pacchetto_da_spedire);
