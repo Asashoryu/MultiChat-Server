@@ -28,6 +28,7 @@ void handle_sigint(int sig)
 	for (int i = 0; i < max_socket; i++) {
 		close(i);
 	}
+	annulla_connessioni();
 	exit (0);
 }
 
@@ -145,6 +146,7 @@ int main() {
 
 					if (byte_ricevuti < 1) {
 						FD_CLR(i, &socket_aperte);
+						annulla_connessione_socket(i);
 						close(i);
 						printf("Server: una connessione e stata chiusa\n");
 						continue;

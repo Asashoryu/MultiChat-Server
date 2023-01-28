@@ -10,5 +10,6 @@ char *alloca_pacchetto();
 void dealloca_pacchetto(char * pacchetto);
 void alloca_array(int ** const array, int dim);
 void dealloca_array(int ** const array);
-
+int annulla_connessioni();
+int annulla_connessione(const int socket);
 #endif
