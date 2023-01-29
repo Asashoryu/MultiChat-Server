@@ -24,11 +24,13 @@ int max_socket = 0;
 
 void handle_sigint(int sig)
 {
-    printf("\nCatturato signal %d\n", sig);
+    printf("\nServer: catturato signal\n");
 	for (int i = 0; i < max_socket; i++) {
 		close(i);
 	}
 	annulla_connessioni();
+	printf("Server: chiuse tutte le socket\n");
+	printf("Server: sessione terminata\n");
 	exit (0);
 }
 

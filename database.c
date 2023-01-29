@@ -38,7 +38,7 @@ PGresult *select_gruppi_utente(const char * const nome_utente) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from membership where nome_utente = '%s' ORDER BY nome_gruppo", nome_utente);
+        sprintf(comandoSQL,"select * from membership where nome_utente = $$%s$$ ORDER BY nome_gruppo", nome_utente);
         gruppi_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(gruppi_db));
         if(strlen(errore) > 0)
@@ -68,7 +68,7 @@ PGresult *select_messaggi_gruppo_utente(const char * const nome_gruppo) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from messaggio where nome_gruppo = '%s' ORDER BY minutaggio", nome_gruppo);
+        sprintf(comandoSQL,"select * from messaggio where nome_gruppo = $$%s$$ ORDER BY minutaggio", nome_gruppo);
         messaggi_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(messaggi_db));
         if(strlen(errore) > 0)
@@ -98,7 +98,7 @@ PGresult *select_notifiche_gruppo_utente(const char * const nome_gruppo) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from notifica where nome_gruppo = '%s'", nome_gruppo);
+        sprintf(comandoSQL,"select * from notifica where nome_gruppo = $$%s$$", nome_gruppo);
         notifiche_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(notifiche_db));
         if(strlen(errore) > 0)
@@ -129,7 +129,7 @@ int insert_gruppo_db(const char * const nome, const char * const amministratore)
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into gruppo(nome, amministratore) values ('%s', '%s')", nome, amministratore);
+        sprintf(comandoSQL,"Insert into gruppo(nome, amministratore) values ($$%s$$, $$%s$$)", nome, amministratore);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -193,7 +193,7 @@ PGresult *select_gruppi_senza_utente(const char * const nome_utente, const char 
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from gruppo as gr where gr.nome  not in (select nome_gruppo from membership where nome_utente = '%s') and gr.amministratore <> '%s' and gr.nome ilike '%%%s%%'", nome_utente,nome_utente,nome_gruppo);
+        sprintf(comandoSQL,"select * from gruppo as gr where gr.nome  not in (select nome_gruppo from membership where nome_utente = $$%s$$) and gr.amministratore <> $$%s$$ and gr.nome ilike '%%%s%%'", nome_utente,nome_utente,nome_gruppo);
         gruppi_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(gruppi_db));
         if(strlen(errore) > 0)
@@ -224,7 +224,7 @@ PGresult *select_socket_gruppo (const char * const nome_gruppo, const char * con
 
     if (miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from utente as u, membership as mem where u.nome = mem.nome_utente and mem.nome_gruppo = '%s' and u.nome <> '%s' and u.connessione is not null",nome_gruppo,nome_utente);
+        sprintf(comandoSQL,"select * from utente as u, membership as mem where u.nome = mem.nome_utente and mem.nome_gruppo = $$%s$$ and u.nome <> $$%s$$ and u.connessione is not null",nome_gruppo,nome_utente);
         socket_db = PQexec(miaconn,comandoSQL);
         strcpy(errore, PQresultErrorMessage(socket_db));
         if(strlen(errore) > 0)
@@ -255,7 +255,7 @@ PGresult *select_socket_amministratore (const char * const nome_gruppo)
 
     if (miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from utente as u, gruppo as gr where u.nome = gr.amministratore and gr.nome = '%s'",nome_gruppo);
+        sprintf(comandoSQL,"select * from utente as u, gruppo as gr where u.nome = gr.amministratore and gr.nome = $$%s$$",nome_gruppo);
         socket_db = PQexec(miaconn,comandoSQL);
         strcpy(errore, PQresultErrorMessage(socket_db));
         if(strlen(errore) > 0)
@@ -286,7 +286,7 @@ PGresult *select_utente (const char * const nome_utente)
 
     if (miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from utente where nome = '%s'",nome_utente);
+        sprintf(comandoSQL,"select * from utente where nome = $$%s$$",nome_utente);
         user_db = PQexec(miaconn,comandoSQL);
         strcpy(errore, PQresultErrorMessage(user_db));
         if(strlen(errore) > 0)
@@ -317,7 +317,7 @@ int insert_utente_db(const char * const nome, const char * const password) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into utente(nome, password) values ('%s', '%s')", nome, password);
+        sprintf(comandoSQL,"Insert into utente(nome, password) values ($$%s$$, $$%s$$)", nome, password);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -352,7 +352,7 @@ int insert_membership_db(const char * const nome_utente, const char * const nome
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into membership(nome_utente, nome_gruppo) values ('%s', '%s')", nome_utente, nome_gruppo);
+        sprintf(comandoSQL,"Insert into membership(nome_utente, nome_gruppo) values ($$%s$$, $$%s$$)", nome_utente, nome_gruppo);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -387,7 +387,7 @@ int insert_messaggio_db(const char * const nome_utente, const char * const nome_
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into messaggio(nome_utente, nome_gruppo, contenuto, minutaggio) values ('%s', '%s', '%s', %s)", nome_utente, nome_gruppo, contenuto, minutaggio);
+        sprintf(comandoSQL,"Insert into messaggio(nome_utente, nome_gruppo, contenuto, minutaggio) values ($$%s$$, $$%s$$, $$%s$$, %s)", nome_utente, nome_gruppo, contenuto, minutaggio);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -422,7 +422,7 @@ int insert_notifica_db(const char * const nome_utente, const char * const nome_g
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Insert into notifica(nome_utente, nome_gruppo) values ('%s', '%s')", nome_utente, nome_gruppo);
+        sprintf(comandoSQL,"Insert into notifica(nome_utente, nome_gruppo) values ($$%s$$, $$%s$$)", nome_utente, nome_gruppo);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -457,7 +457,7 @@ int delete_membership_db(const char * const nome_utente, const char * const nome
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"delete from membership where nome_utente = '%s' AND nome_gruppo = '%s'", nome_utente, nome_gruppo);
+        sprintf(comandoSQL,"delete from membership where nome_utente = $$%s$$ AND nome_gruppo = $$%s$$", nome_utente, nome_gruppo);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -492,7 +492,7 @@ int delete_notifica_db(const char * const nome_utente, const char * const nome_g
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"delete from notifica where nome_utente = '%s' AND nome_gruppo = '%s'", nome_utente, nome_gruppo);
+        sprintf(comandoSQL,"delete from notifica where nome_utente = $$%s$$ AND nome_gruppo = $$%s$$", nome_utente, nome_gruppo);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -526,7 +526,7 @@ PGresult *check_se_utente_registrato(const char* const nome, const char* const p
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from utente WHERE nome = '%s' AND password = '%s'", nome, password);
+        sprintf(comandoSQL,"select * from utente WHERE nome = $$%s$$ AND password = $$%s$$", nome, password);
         utente_registrato_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(utente_registrato_db));
         if(strlen(errore) > 0)
@@ -556,7 +556,7 @@ PGresult *check_se_gruppo_registrato(const char* const nome) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from gruppo WHERE nome = '%s'", nome);
+        sprintf(comandoSQL,"select * from gruppo WHERE nome = $$%s$$", nome);
         utente_registrato_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(utente_registrato_db));
         if(strlen(errore) > 0)
@@ -586,7 +586,7 @@ PGresult *check_se_utente_amministratore(const char* const nome_utente, const ch
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from gruppo WHERE nome = '%s' AND amministratore = '%s'", nome_gruppo, nome_utente);
+        sprintf(comandoSQL,"select * from gruppo WHERE nome = $$%s$$ AND amministratore = $$%s$$", nome_gruppo, nome_utente);
         utente_registrato_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(utente_registrato_db));
         if(strlen(errore) > 0)
@@ -616,7 +616,7 @@ PGresult *check_se_utente_connesso(const char * const nome_utente) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"select * from utente WHERE nome = '%s'", nome_utente);
+        sprintf(comandoSQL,"select * from utente WHERE nome = $$%s$$", nome_utente);
         utente_registrato_db = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(utente_registrato_db));
         if(strlen(errore) > 0)
@@ -647,7 +647,7 @@ int update_stato_connessione_utente(const char * const nome, const int socket) {
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Update utente set connessione = %d where nome = '%s'", socket, nome);
+        sprintf(comandoSQL,"Update utente set connessione = %d where nome = $$%s$$", socket, nome);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)
@@ -683,7 +683,7 @@ int annulla_connessione_utente(const char * const nome)
 
     if(miaconn != NULL)
     {
-        sprintf(comandoSQL,"Update utente set connessione = null where nome = '%s'", nome);
+        sprintf(comandoSQL,"Update utente set connessione = null where nome = $$%s$$", nome);
         exe = PQexec(miaconn, comandoSQL);
         strcpy(errore, PQresultErrorMessage(exe));
         if(strlen(errore) > 0)

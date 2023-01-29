@@ -1,9 +1,3 @@
-DELETE FROM utente
-DELETE FROM gruppo
-DELETE FROM membership
-DELETE FROM messaggio
-DELETE FROM notifica
-
 --Inserimenti in utente
 INSERT INTO utente
 VALUES
@@ -14,7 +8,7 @@ VALUES
 ('Pino','pass5'),
 ('Utente','pass6'),
 ('Eoliche','pass7'),
-('Uffi','pass8')
+('Uffi','pass8');
 
 --Inserimenti in gruppi
 INSERT INTO gruppo
@@ -23,7 +17,7 @@ VALUES
 ('Gruppo2','Pino'),
 ('Gruppo3','Oleksandr'),
 ('Pale','Eoliche'),
-('Mondo','Alessandro')
+('Mondo','Alessandro');
 
 INSERT INTO membership
 VALUES
@@ -32,16 +26,16 @@ VALUES
 ('Alessandro','Mondo'),
 ('Pino','Mondo'),
 ('Oleksandr','Mondo'),
-('Eoliche','Gruppo3')
+('Eoliche','Gruppo3');
 
 INSERT INTO messaggio (nome_utente,nome_gruppo,contenuto,minutaggio)
 VALUES
 ('Eoliche','Mondo','Che palle eoliche',1),
 ('Utente','Gruppo1','Ciao',2),
-('Alessandro','Mondo','Salve',3)
+('Alessandro','Mondo','Salve',3);
 
 INSERT INTO notifica
 VALUES
 ('Uffi','Mondo'),
 ('Patroccio','Gruppo1'),
-('Pino','Mondo')
+('Pino','Mondo');

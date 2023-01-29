@@ -93,6 +93,7 @@ void set_manda_messaggio(int ** const array, int * const dim, const int socket_f
 
 void processa_login(const char * const pacchetto, char * const pacchetto_da_spedire, int ** const array_socket, int * const dim, const int socket_fd) {
     PGresult *utente_registrato;
+    PGresult *amministratore;
 
     char * nome;
     char * password;
@@ -178,8 +179,10 @@ void processa_login(const char * const pacchetto, char * const pacchetto_da_sped
                 printf(" 16");
 
                 format_add_inizio_notifiche(pacchetto_da_spedire);
+
+                amministratore = check_se_utente_amministratore(nome, nome_gruppo);
                 // aggiunti le notifiche se amministratore
-                if (strcmp(nome, PQgetvalue(gruppi_utente, i, 0)) == 0) {
+                if (amministratore != NULL && PQntuples(amministratore) == 1) {
                     notifiche_gruppi_utente = select_notifiche_gruppo_utente(nome_gruppo);
                     printf(" 17");
                     num_notifiche_gruppo = PQntuples(notifiche_gruppi_utente);
@@ -508,6 +511,14 @@ char *processa_accetta_notifica(const char * const pacchetto, char * const pacch
             }
 
             format_add_fine_messaggi(pacchetto_da_spedire);
+
+            format_add_inizio_notifiche(pacchetto_da_spedire);
+            format_add_inizio_notifica(pacchetto_da_spedire);
+            format_add_notificante(pacchetto_da_spedire, nome_richiedente);
+            format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
+            format_add_fine_notifica(pacchetto_da_spedire);
+            format_add_fine_notifiche(pacchetto_da_spedire);
+
             format_add_fine_gruppo(pacchetto_da_spedire);
 
             format_add_fine_gruppi(pacchetto_da_spedire);
@@ -552,6 +563,13 @@ char *processa_annulla_notifica(const char * const pacchetto, char * const pacch
         format_add_inizio_gruppo(pacchetto_da_spedire);
 
         format_add_nome_gruppo(pacchetto_da_spedire, nome_gruppo);
+
+        format_add_inizio_notifiche(pacchetto_da_spedire);
+        format_add_inizio_notifica(pacchetto_da_spedire);
+        format_add_notificante(pacchetto_da_spedire, nome_richiedente);
+        format_add_gruppo_notificato(pacchetto_da_spedire, nome_gruppo);
+        format_add_fine_notifica(pacchetto_da_spedire);
+        format_add_fine_notifiche(pacchetto_da_spedire);
 
         format_add_fine_gruppo(pacchetto_da_spedire);
         format_add_fine_gruppi(pacchetto_da_spedire);

@@ -525,9 +525,9 @@ void format_manda_notifica(const int comando, char * const pacchetto_da_spedire)
         sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Notifica mandata con successo\r\n", SENDNOTIFICAOK);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
-    else if (comando == SEARCHGRUPERR) {
+    else if (comando == SENDNOTIFICAERR) {
         format_add_inizio_intestazione(pacchetto_da_spedire);
-        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nell'invio della notifica: non è stato possibile accedere al Database\r\n", SEARCHGRUPERR);
+        sprintf(pacchetto_da_spedire + strlen(pacchetto_da_spedire), "cmd=%d\r\nmessaggio=Errore nell'invio della notifica: non è stato possibile accedere al Database\r\n", SENDNOTIFICAERR);
         format_add_fine_intestazione(pacchetto_da_spedire);
     }
 }
