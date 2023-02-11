@@ -55,7 +55,7 @@ void *gestisci_richiesta(void *arg) {
 
 	if (byte_ricevuti < 1) {
 		FD_CLR(socket_richiesta, &socket_aperte);
-		annulla_connessione_socket(socket_richiesta);
+		annulla_connessione(socket_richiesta);
 		close(socket_richiesta);
 		printf("Server: una connessione e stata chiusa\n");
 		printf("Thread finito %ld per la socket %d\n", pthread_self(), socket_richiesta);
@@ -208,7 +208,9 @@ int main() {
 					printf("Server: accettata una nuova connessione da %s con socket %d\n", indirizzo_buffer, socket_client);
 				}
 				else {
-					pthread_create(&gestisci_t, NULL, gestisci_richiesta, (int *) &i);
+					//variabile tampone per risolvere possibili concorrenze
+					int sock=i;
+					pthread_create(&gestisci_t, NULL, gestisci_richiesta, (int *) &sock);
 				}
 			}
 		}
