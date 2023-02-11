@@ -14,13 +14,16 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <signal.h>
+#include <pthread.h>
 
 #include "controller.h"
 
-#define DIMBUFF 256
+#define DIMBUFF 10000
 #define PORTA "10000"
 
 int max_socket = 0;
+fd_set socket_leggibili;
+fd_set socket_aperte;
 
 void handle_sigint(int sig)
 {
@@ -34,12 +37,81 @@ void handle_sigint(int sig)
 	exit (0);
 }
 
+void *gestisci_richiesta(void *arg) {
+	int * socket_pt;
+	int socket_richiesta;
+	char buffer_read[DIMBUFF];
+
+	socket_pt = (int *) arg;
+	socket_richiesta = *socket_pt;
+
+	int byte_ricevuti = recv(socket_richiesta, buffer_read, DIMBUFF, 0);
+
+	printf("Thread creato %ld per la socket %d\n", pthread_self(), socket_richiesta);
+
+	printf("%d caratteri letti dal server\n", byte_ricevuti);
+	buffer_read[byte_ricevuti] = '\0';
+	printf("Server: il messaggio ricevuto: %s\n", buffer_read);
+
+	if (byte_ricevuti < 1) {
+		FD_CLR(socket_richiesta, &socket_aperte);
+		annulla_connessione_socket(socket_richiesta);
+		close(socket_richiesta);
+		printf("Server: una connessione e stata chiusa\n");
+		printf("Thread finito %ld per la socket %d\n", pthread_self(), socket_richiesta);
+		pthread_exit(NULL);
+	}
+
+	char * pacchetto_da_spedire;
+	int * array;
+	int dim;
+	printf("questa è la socket prima di essere processata: %d\n", socket_richiesta);
+	processa(buffer_read, &pacchetto_da_spedire, &array, &dim, &socket_richiesta);
+
+	int pacchetto_da_spedire_len = strlen(pacchetto_da_spedire);
+
+	printf("\nEcco il pacchetto che sarebbe spedito di dimensione %d:\n%s", pacchetto_da_spedire_len, pacchetto_da_spedire);
+
+	printf("%d e la dimensione dell'array di socket da spedire\n", dim);
+
+	for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
+
+	array[dim-1] = socket_richiesta;
+
+	for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
+
+	for (int z = 0; z < dim; z++) {
+		int begin = 0;
+		if(FD_ISSET(array[z], &socket_aperte)) {
+			while(begin < pacchetto_da_spedire_len) {
+				int sent = send(array[z], pacchetto_da_spedire + begin, pacchetto_da_spedire_len - begin, 0);
+				if (sent == -1) {
+					printf("Si è verificato un errore nella spedizione del pacchetto %d alla socket %d, con errore %d (%d)\n", z, array[z], sent, errno);
+				}
+				begin += sent;
+				printf("spedito pacchetto %d alla socket %d\n", z, array[z]);
+			}
+		}
+	}
+
+	printf("Finito di spedire i pacchetti\n");
+
+	dealloca_pacchetto(pacchetto_da_spedire);
+	dealloca_array(&array);
+
+	printf("Thread finito %ld per la socket %d\n", pthread_self(), socket_richiesta);
+	pthread_exit(NULL);
+}
+
 // tiene traccia di tutti gli utenti online e accetta le richieste di messaggio di quelli attivi presso le loro chat reindirizzandole
 //presso gli utenti giusti
 int main() {
 	// definizione variabili
 	int socket_ascolta;
 	int socket_client;
+
+	pthread_t gestisci_t;
+
 	struct sockaddr_un indirizzo;
 	struct addrinfo hints;
 	struct addrinfo *indirizzo_bind;
@@ -88,8 +160,6 @@ int main() {
 		printf("Server: in ascolto\n");
 	}
 
-
-	fd_set socket_aperte;
 	FD_ZERO(&socket_aperte);
 	FD_SET(socket_ascolta, &socket_aperte);
 	
@@ -98,7 +168,6 @@ int main() {
 	// accept
 	while(1) {
 
-		fd_set socket_leggibili;
 		FD_ZERO(&socket_leggibili);
 		struct timeval timeout;
 		timeout.tv_sec = 1;
@@ -139,57 +208,7 @@ int main() {
 					printf("Server: accettata una nuova connessione da %s con socket %d\n", indirizzo_buffer, socket_client);
 				}
 				else {
-					char buffer_read[DIMBUFF];
-					int byte_ricevuti = recv(i, buffer_read, DIMBUFF, 0);
-
-					printf("%d caratteri letti dal server\n", byte_ricevuti);
-					buffer_read[byte_ricevuti] = '\0';
-					printf("Server: il messaggio ricevuto: %s\n", buffer_read);
-
-					if (byte_ricevuti < 1) {
-						FD_CLR(i, &socket_aperte);
-						annulla_connessione_socket(i);
-						close(i);
-						printf("Server: una connessione e stata chiusa\n");
-						continue;
-					}
-
-					char * pacchetto_da_spedire;
-					int * array;
-					int dim;
-					printf("questa è la socket prima di essere processata: %d\n", i);
-					processa(buffer_read, &pacchetto_da_spedire, &array, &dim, &i);
-
-					int pacchetto_da_spedire_len = strlen(pacchetto_da_spedire);
-
-					printf("\nEcco il pacchetto che sarebbe spedito di dimensione %d:\n%s", pacchetto_da_spedire_len, pacchetto_da_spedire);
-
-					printf("%d e la dimensione dell'array di socket da spedire\n", dim);
-
-					for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
-
-					array[dim-1] = i;
-
-					for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
-
-					for (int z = 0; z < dim; z++) {
-						int begin = 0;
-						if(FD_ISSET(array[z], &socket_aperte)) {
-							while(begin < pacchetto_da_spedire_len) {
-								int sent = send(array[z], pacchetto_da_spedire + begin, pacchetto_da_spedire_len - begin, 0);
-								if (sent == -1) {
-									printf("Si è verificato un errore nella spedizione del pacchetto %d alla socket %d, con errore %d (%d)\n", z, array[z], sent, errno);
-								}
-								begin += sent;
-								printf("spedito pacchetto %d alla socket %d\n", z, array[z]);
-							}
-						}
-					}
-
-					printf("Finito di spedire i pacchetti\n");
-
-					dealloca_pacchetto(pacchetto_da_spedire);
-					dealloca_array(&array);
+					pthread_create(&gestisci_t, NULL, gestisci_richiesta, (int *) &i);
 				}
 			}
 		}
