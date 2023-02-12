@@ -58,27 +58,27 @@ void *gestisci_richiesta(void *arg) {
 		annulla_connessione(socket_richiesta);
 		close(socket_richiesta);
 		printf("Server: una connessione e stata chiusa\n");
-		printf("Thread finito %ld per la socket %d\n", pthread_self(), socket_richiesta);
+		printf("Thread %ld per la socket %d ha finito\n", pthread_self(), socket_richiesta);
 		pthread_exit(NULL);
 	}
 
 	char * pacchetto_da_spedire;
 	int * array;
 	int dim;
-	printf("questa è la socket prima di essere processata: %d\n", socket_richiesta);
+	// printf("questa è la socket prima di essere processata: %d\n", socket_richiesta);
 	processa(buffer_read, &pacchetto_da_spedire, &array, &dim, &socket_richiesta);
 
 	int pacchetto_da_spedire_len = strlen(pacchetto_da_spedire);
 
-	printf("\nEcco il pacchetto che sarebbe spedito di dimensione %d:\n%s", pacchetto_da_spedire_len, pacchetto_da_spedire);
+	printf("\nEcco il pacchetto spedito ai client (dimensione %d byte):\n%s", pacchetto_da_spedire_len, pacchetto_da_spedire);
 
-	printf("%d e la dimensione dell'array di socket da spedire\n", dim);
+	// printf("%d e la dimensione dell'array di socket da spedire\n", dim);
 
-	for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
+	// for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
 
 	array[dim-1] = socket_richiesta;
 
-	for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
+	// for(int a=0; a<dim;a++) printf("elemento %d dell'array %d\n", a, array[a]);
 
 	for (int z = 0; z < dim; z++) {
 		int begin = 0;
@@ -87,6 +87,7 @@ void *gestisci_richiesta(void *arg) {
 				int sent = send(array[z], pacchetto_da_spedire + begin, pacchetto_da_spedire_len - begin, 0);
 				if (sent == -1) {
 					printf("Si è verificato un errore nella spedizione del pacchetto %d alla socket %d, con errore %d (%d)\n", z, array[z], sent, errno);
+					break;
 				}
 				begin += sent;
 				printf("spedito pacchetto %d alla socket %d\n", z, array[z]);
@@ -94,12 +95,12 @@ void *gestisci_richiesta(void *arg) {
 		}
 	}
 
-	printf("Finito di spedire i pacchetti\n");
+	// printf("Finito di spedire i pacchetti\n");
 
 	dealloca_pacchetto(pacchetto_da_spedire);
 	dealloca_array(&array);
 
-	printf("Thread finito %ld per la socket %d\n", pthread_self(), socket_richiesta);
+	printf("Thread %ld per la socket %d ha finito\n", pthread_self(), socket_richiesta);
 	pthread_exit(NULL);
 }
 
@@ -162,7 +163,7 @@ int main() {
 
 	FD_ZERO(&socket_aperte);
 	FD_SET(socket_ascolta, &socket_aperte);
-	
+
 	max_socket = socket_ascolta;
 
 	// accept
@@ -177,15 +178,15 @@ int main() {
 
 		if (select(max_socket + 1, &socket_leggibili, 0, 0, &timeout) < 0) {
 			fprintf(stderr, "select() fallita. (%d)\n", errno);
-			return 1;
+			continue;
 		}
 
 		int i;
 		for (int i = 0; i <= max_socket; ++i) {
 			if (FD_ISSET(i, &socket_leggibili)) {
 
-				printf("Il ciclo e %d\n", i);
-				
+				// printf("Il ciclo e %d\n", i);
+
 				if (i == socket_ascolta) {
 
 					struct sockaddr_storage indirizzo_client;

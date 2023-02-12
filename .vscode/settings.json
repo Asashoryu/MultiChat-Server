@@ -5,6 +5,20 @@
         "libpq-fe.h": "c",
         "gestoredb.h": "c",
         "stdio.h": "c",
-        "strutture_dati.h": "c"
+        "strutture_dati.h": "c",
+        "signal.h": "c",
+        "errno.h": "c",
+        "inet.h": "c",
+        "netdb.h": "c",
+        "un.h": "c",
+        "time.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c",
+        "fcntl.h": "c",
+        "types.h": "c",
+        "stat.h": "c",
+        "unistd.h": "c",
+        "in.h": "c",
+        "pthread.h": "c"
     }
 }
